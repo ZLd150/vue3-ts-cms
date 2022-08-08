@@ -37,7 +37,8 @@ module.exports = {
       .set("@api", "@/api")
       .set("@router", "@/router")
       .set("@store", "@/store")
-      .set("@views", "@/views");
+      .set("@views", "@/views")
+      .set("@utils", "@/utils");
     config
       .plugin("AutoImport")
       .use(AutoImport({ resolvers: [ElementPlusResolver()] }));
