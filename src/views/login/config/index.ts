@@ -10,8 +10,8 @@ export const accountRules = {
   password: [
     { required: true, message: "密码为必填内容！", trigger: "blur" },
     {
-      pattern: /^[a-zA-Z0-9]{8,20}$/,
-      message: "密码必须为8-20个小写、大写字母或数字组成！",
+      pattern: /^[a-zA-Z0-9]{6,20}$/,
+      message: "密码必须为6-20个小写、大写字母或数字组成！",
       trigger: "blur"
     }
   ]

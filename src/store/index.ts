@@ -1,14 +1,17 @@
 import { createStore } from "vuex";
+import login from "./modules/login";
 
-const store = createStore({
+const store = createStore<Store.RootState>({
   state: () => {
     return {
-      name: "zl"
+      name: "zl",
+      age: 29
     };
   },
   mutations: {},
   actions: {},
-  getters: {}
+  getters: {},
+  modules: { login }
 });
 
 export default store;

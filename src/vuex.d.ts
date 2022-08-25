@@ -1,9 +1,8 @@
-import { ComponentCustomProperties } from "vue";
 import { Store } from "vuex";
 
 declare module "@vue/runtime-core" {
   interface State {
-    name: string;
+    [key: string]: any;
   }
 
   interface ComponentCustomProperties {

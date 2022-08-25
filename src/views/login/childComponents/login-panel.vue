@@ -1,8 +1,8 @@
 <template>
-  <div :class="$style['login-panel']">
+  <div :class="login['panel']">
     <h1>吃瓜系统</h1>
-    <el-tabs type="border-card" stretch v-model="activeTab">
-      <el-tab-pane>
+    <el-tabs type="border-card" stretch v-model="currentTab">
+      <el-tab-pane name="account">
         <template #label>
           <span>
             <el-icon style="top: 1px"><UserFilled /></el-icon>
@@ -11,19 +11,19 @@
         </template>
         <loginAccount ref="loginAccountRef" />
       </el-tab-pane>
-      <el-tab-pane>
+      <el-tab-pane name="phone">
         <template #label>
           <span>
             <el-icon style="top: 1px"><Iphone /></el-icon>
             <span> 手机登录</span>
           </span>
         </template>
-        <loginPhone />
+        <loginPhone ref="loginPhoneRef" />
       </el-tab-pane>
     </el-tabs>
     <!-- 底部 -->
     <div>
-      <div :class="$style['login-footer']">
+      <div :class="login['footer']">
         <el-checkbox
           v-model="isKeepPassword"
           label="记住密码"
@@ -36,8 +36,8 @@
       <el-button
         size="large"
         type="primary"
-        :class="$style.bottom"
-        @click="login"
+        :class="login['bottom']"
+        @click="loginHandler"
         >立即登录</el-button
       >
     </div>
@@ -53,19 +53,24 @@ import cache from "@/utils/cache";
 
 const keepStatus = cache.getCache("isKeepPassword");
 const isKeepPassword = ref(keepStatus === "" ? false : !!keepStatus);
-const activeTab = ref(0);
-const isAccountLogin = computed(() => activeTab.value == 0);
+const currentTab = ref("account");
+const isAccountLogin = computed(() => currentTab.value === "account");
 const loginAccountRef = ref<InstanceType<typeof loginAccount>>();
-
-const login = () => {
-  loginAccountRef.value?.loginHandler();
+const loginPhoneRef = ref<InstanceType<typeof loginPhone>>();
+// 登录方法
+const loginHandler = () => {
+  if (isAccountLogin.value) {
+    loginAccountRef.value?.loginHandler();
+  } else {
+    // 调用手机登录方法
+  }
 };
 
 const keepChange = (value: boolean) => cache.setCache("isKeepPassword", value);
 </script>
 
-<style lang="less" module>
-.login-panel {
+<style lang="less" module="login">
+.panel {
   :global {
     #tab-1 {
       margin-right: -1px;
@@ -75,7 +80,7 @@ const keepChange = (value: boolean) => cache.setCache("isKeepPassword", value);
   margin-bottom: 200px;
   text-align: center;
 
-  .login-footer {
+  .footer {
     display: flex;
     height: 32px;
   }

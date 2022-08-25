@@ -7,6 +7,17 @@ module.exports = {
   // 配置方式一: CLI提供的属性
   outputDir: "./build",
   publicPath: "./",
+  devServer: {
+    proxy: {
+      "^/api": {
+        target: "http://152.136.185.210:5000",
+        pathRewrite: {
+          "^/api": ""
+        },
+        changeOrigin: true
+      }
+    }
+  },
   // 配置方式二: 与webpack属性完全一致,最后会进行合并
   // configureWebpack: {
   //   resolve: {

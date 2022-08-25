@@ -9,7 +9,7 @@ import { ElLoading } from "element-plus";
 axios.defaults.timeout = 10000;
 
 // 默认的loading状态
-const DEFAULT_LOADING = true;
+const DEFAULT_LOADING = false;
 
 // 封装
 class Requst {
@@ -25,7 +25,7 @@ class Requst {
   constructor(config: RequstConfig) {
     this.instance = axios.create(config);
     this.interceptors = config.interceptors;
-    this.isShowLoading = config.isShowLoading ?? DEFAULT_LOADING;
+    this.isShowLoading = DEFAULT_LOADING;
     // 实例的拦截器
     this.instance.interceptors.request.use(
       this.interceptors?.requestInterceptors,
@@ -39,7 +39,7 @@ class Requst {
     // 全局封装拦截器
     this.instance.interceptors.request.use(
       (config) => {
-        console.log("全局的请求成功拦截");
+        // console.log("全局的请求成功拦截");
         // config.headers = {
         //   Authorization: "123456"
         // };
@@ -54,24 +54,24 @@ class Requst {
         return config;
       },
       (err) => {
-        console.log("全局的请求失败拦截", err);
+        // console.log("全局的请求失败拦截", err);
         return err;
       }
     );
     this.instance.interceptors.response.use(
       (res) => {
-        console.log("全局的响应成功拦截");
+        // console.log("全局的响应成功拦截");
         const data = res.data;
         // 关闭loading
         this.loading?.close();
         if (data?.success) {
-          console.log("请求失败了巴拉巴拉");
+          // console.log("请求失败了巴拉巴拉");
         } else return data;
       },
       (err) => {
-        console.log("全局的响应失败拦截", err);
+        // console.log("全局的响应失败拦截", err);
         if (err.response.status === "400") {
-          console.log("请求失败");
+          console.warn("请求失败");
         }
         // 关闭loading
         this.loading?.close();
@@ -87,7 +87,7 @@ class Requst {
       }
 
       // 2-判断当前请求是否需要loading效果
-      if (config.isShowLoading === false) {
+      if (config.isShowLoading === true) {
         this.isShowLoading = config.isShowLoading;
       }
 
@@ -105,7 +105,7 @@ class Requst {
           reject(err);
           return err;
         })
-        // 2-将isShowLoading设置为true,这样不会影响下个请求
+        // 2-将isShowLoading设置为初始状态,这样不会影响下个请求
         .finally(() => (this.isShowLoading = DEFAULT_LOADING));
     });
   }
@@ -127,4 +127,4 @@ class Requst {
   }
 }
 
-export default Requst;
+export { Requst as default };

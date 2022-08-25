@@ -18,10 +18,12 @@
 
 <script setup lang="ts">
 import { ref, reactive, defineExpose } from "vue";
+import { useStore } from "vuex";
 import { accountRules } from "../config/index";
 import cache from "@/utils/cache";
 import type { FormInstance } from "element-plus";
 
+const store = useStore();
 const formRef = ref<FormInstance>();
 const { setCache, getCache, deleteCache } = cache;
 // 字段
@@ -29,13 +31,12 @@ const account = reactive<Record<string, string>>({
   name: getCache("name"),
   password: getCache("password")
 });
-console.log("account>>>", account);
 
 // 登录方法
 const loginHandler = () => {
   formRef.value?.validate((valid) => {
     if (valid) {
-      // 判断是否需要记住密码
+      // 1.判断是否需要记住密码
       const isKeepPassword: boolean | string = getCache("isKeepPassword");
       if (isKeepPassword) {
         setCache("name", account.name);
@@ -44,8 +45,8 @@ const loginHandler = () => {
         deleteCache("name");
         deleteCache("password");
       }
-      // 进行登录验证
-      console.log("校验通过,正在执行登录逻辑");
+      // 2.进行登录验证
+      store.dispatch("login/accountLoginAction", { ...account });
     }
   });
 };

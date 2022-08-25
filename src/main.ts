@@ -15,5 +15,5 @@ app.use(store);
 Object.entries(Icons).forEach(([key, val]) => app.component(key, val));
 app.mount("#app");
 
-console.log("VUE_APP_BASE_URL>>>", process.env.VUE_APP_BASE_URL);
-console.log("VUE_APP_BASE_NAME>>>", process.env.VUE_APP_BASE_NAME);
+// console.log("VUE_APP_BASE_URL>>>", process.env.VUE_APP_BASE_URL);
+// console.log("VUE_APP_BASE_NAME>>>", process.env.VUE_APP_BASE_NAME);

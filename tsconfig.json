@@ -15,7 +15,13 @@
     "types": ["webpack-env"], // 指定具体要解析使用的类型
     // 路径解析
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@api/*": ["src/api/*"],
+      "@router/*": ["src/router/*"],
+      "@store/*": ["src/store/*"],
+      "@views/*": ["src/views/*"],
+      "@utils/*": ["src/utils/*"]
     },
     // 指定在项目中可以使用库的类型
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
