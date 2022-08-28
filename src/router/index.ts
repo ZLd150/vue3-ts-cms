@@ -1,10 +1,11 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import type { RouteRecordRaw } from "vue-router";
+import cache from "@/utils/cache";
 
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
-    redirect: "/login"
+    redirect: "/main"
   },
   {
     path: "/login",
@@ -21,4 +22,16 @@ const router = createRouter({
   history: createWebHashHistory()
 });
 
-export default router;
+// 全局前置守卫
+router.beforeEach((to) => {
+  const token = cache.getCache("token");
+  if (to.path !== "/login" && !token) return "/login";
+});
+
+// router.beforeEach((to, from, next) => {
+//   if (to.path === "/login") return next();
+//   const token = cache.getCache("token");
+//   token ? next() : next("/login");
+// });
+
+export { router as default };

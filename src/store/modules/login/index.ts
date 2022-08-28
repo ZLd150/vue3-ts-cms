@@ -1,13 +1,15 @@
 import { Module } from "vuex";
 import cache from "@/utils/cache";
-import loginApi, { UserInfoType } from "@/api/login";
+import loginApi, { UserInfoType, RoleMenuType } from "@/api/login";
+import router from "@/router";
 
 const loginModule: Module<Store.LoginState, Store.RootState> = {
   namespaced: true,
   state: () => {
     return {
       token: "",
-      userInfo: {}
+      userInfo: {},
+      userMenus: []
     };
   },
   mutations: {
@@ -18,6 +20,10 @@ const loginModule: Module<Store.LoginState, Store.RootState> = {
     changeUserInfo(state, userInfo: UserInfoType) {
       state.userInfo = userInfo;
       cache.setCache("userInfo", userInfo);
+    },
+    changeUserMenus(state, userMenus: RoleMenuType) {
+      state.userMenus = userMenus;
+      cache.setCache("userMenus", userMenus);
     }
   },
   actions: {
@@ -35,11 +41,18 @@ const loginModule: Module<Store.LoginState, Store.RootState> = {
       const { data: menuList = [] } = await loginApi.queryUserMenus(
         data.role.id
       );
-      console.log("menuList>>>", menuList);
+      code !== 0 || commit("changeUserMenus", menuList);
+      // 4.跳转到首页
+      router.push("/main");
     },
-    // 手机登录
-    phoneLoginAction({ commit }, payload: any) {
-      console.log("执行了phoneLoginAction>>>", payload);
+    // 解决刷新页面时vuex数据丢失的问题
+    loadLocalLogin({ commit }) {
+      const token = cache.getCache("token");
+      !token || commit("changeToken", token);
+      const userInfo = cache.getCache("userInfo");
+      !userInfo || commit("changeUserInfo", userInfo);
+      const userMenus = cache.getCache("userMenus");
+      !userMenus || commit("changeUserMenus", userMenus);
     }
   },
   getters: {}

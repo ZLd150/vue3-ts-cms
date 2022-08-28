@@ -43,7 +43,7 @@ interface Role {
   updateAt: string;
 }
 
-interface RoleMenuType {
+export interface RoleMenuType {
   id: number;
   name: string;
   type: number;

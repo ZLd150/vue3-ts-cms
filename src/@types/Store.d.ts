@@ -8,5 +8,6 @@ declare namespace Store {
   export interface LoginState {
     token: string;
     userInfo: unknown;
+    userMenus: unknown;
   }
 }
