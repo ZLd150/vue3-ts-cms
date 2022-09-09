@@ -26,7 +26,6 @@ const loginModule: Module<Store.LoginState, Store.RootState> = {
       state.userMenus = userMenus;
       cache.setCache("userMenus", userMenus);
       // TODO: 根据菜单动态注册路由
-      console.log(1111);
       const routes = newMapMenus(userMenus);
       routes.forEach((t) => router.addRoute("main", t));
     }
