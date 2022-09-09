@@ -10,4 +10,10 @@ declare namespace Store {
     userInfo: unknown;
     userMenus: unknown;
   }
+
+  type LoginStoreType = {
+    login: LoginState;
+  };
+
+  export type StoreType = LoginStoreType & RootState;
 }

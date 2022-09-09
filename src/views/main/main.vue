@@ -1,16 +1,28 @@
 <template>
   <div :class="mianModule['main']">
     <el-container :class="mianModule['main-content']">
-      <el-aside width="200px">侧边栏</el-aside>
+      <el-aside :width="isCollapse ? '60px' : '210px'">
+        <NavMenu :collapse="isCollapse" />
+      </el-aside>
       <el-container :class="mianModule.page">
-        <el-header :class="mianModule['page-header']">头部</el-header>
-        <el-main :class="mianModule['page-content']">主要内容</el-main>
+        <el-header :class="mianModule['page-header']">
+          <NavHeader v-model="isCollapse" />
+        </el-header>
+        <el-main :class="mianModule['page-content']">
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref, watch } from "vue";
+import NavMenu from "@components/navMenu";
+import NavHeader from "@components/navHeader";
+
+const isCollapse = ref(false);
+</script>
 
 <style lang="less" module="mianModule">
 .main {
@@ -59,7 +71,7 @@
     text-align: left;
     cursor: pointer;
     background-color: #001529;
-    transition: width 0.3s linear;
+    transition: width 0.15s linear;
     scrollbar-width: none; /* firefox */
     -ms-overflow-style: none; /* IE 10+ */
 

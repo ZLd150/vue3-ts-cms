@@ -2,15 +2,16 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router/index";
 import store from "./store";
+import ElementPlus from "element-plus";
 import * as Icons from "@element-plus/icons-vue";
 
+import "element-plus/dist/index.css";
 import "./assets/css/index.less";
-import "element-plus/theme-chalk/index.css";
 
 const app = createApp(App);
 app.use(router);
 app.use(store);
-
+app.use(ElementPlus);
 // 注册图标
 Object.entries(Icons).forEach(([key, val]) => app.component(key, val));
 app.mount("#app");

@@ -52,8 +52,7 @@ export interface RoleMenuType {
   sort: number;
   children: RoleSecondLevelMenu[];
 }
-
-interface RoleSecondLevelMenu {
+export interface RoleSecondLevelMenu {
   id: number;
   url: string;
   name: string;
@@ -61,9 +60,10 @@ interface RoleSecondLevelMenu {
   type: number;
   children?: RoleThreeLevelMenu[];
   parentId: number;
+  icon?: string;
 }
 
-interface RoleThreeLevelMenu {
+export interface RoleThreeLevelMenu {
   id: number;
   url?: string;
   name: string;
@@ -71,6 +71,7 @@ interface RoleThreeLevelMenu {
   type: number;
   parentId: number;
   permission: string;
+  children: null;
 }
 
 class LoginApi {
@@ -107,7 +108,7 @@ class LoginApi {
    */
   static async queryUserMenus(
     id: number
-  ): Promise<System.ResponseGeneric<RoleMenuType>> {
+  ): Promise<System.ResponseGeneric<RoleMenuType[]>> {
     return await request.get({ url: Login.UserMenus + id + "/menu" });
   }
 }

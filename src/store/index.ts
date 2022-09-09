@@ -1,4 +1,4 @@
-import { createStore } from "vuex";
+import { createStore, Store, useStore as useVuexStore } from "vuex";
 import login from "./modules/login";
 
 const store = createStore<Store.RootState>({
@@ -14,4 +14,6 @@ const store = createStore<Store.RootState>({
   modules: { login }
 });
 
-export default store;
+const useStore = (): Store<Store.StoreType> => useVuexStore();
+
+export { store as default, useStore };

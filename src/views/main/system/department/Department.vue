@@ -1,0 +1,17 @@
+<template>
+  <div class="department">
+    <h2>department</h2>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  name: "department"
+});
+</script>
+
+<script setup lang="ts"></script>
+
+<style lang="less" module></style>
