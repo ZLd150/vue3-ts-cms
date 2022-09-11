@@ -17,6 +17,7 @@
     "paths": {
       "@/*": ["src/*"],
       "@components/*": ["src/components/*"],
+      "@baseComponents/*": ["src/baseComponents/*"],
       "@api/*": ["src/api/*"],
       "@router/*": ["src/router/*"],
       "@store/*": ["src/store/*"],

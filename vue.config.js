@@ -2,8 +2,8 @@ const path = require("path");
 
 module.exports = {
   // 配置方式一: CLI提供的属性
-  outputDir: "./build",
-  publicPath: "./",
+  outputDir: "./dist",
+  // publicPath: "./",
   devServer: {
     proxy: {
       "^/api": {
@@ -34,6 +34,7 @@ module.exports = {
     config.resolve.alias
       .set("@", path.resolve(__dirname, "src"))
       .set("@components", "@/components")
+      .set("@baseComponents", "@/baseComponents")
       .set("@api", "@/api")
       .set("@router", "@/router")
       .set("@store", "@/store")

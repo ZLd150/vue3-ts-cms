@@ -50,6 +50,7 @@ import { ref, computed } from "vue";
 import loginAccount from "./login-account.vue";
 import loginPhone from "./login-phone.vue";
 import cache from "@/utils/cache";
+import type { CheckboxValueType } from "element-plus";
 
 const keepStatus = cache.getCache("isKeepPassword");
 const isKeepPassword = ref(keepStatus === "" ? false : !!keepStatus);
@@ -66,7 +67,9 @@ const loginHandler = () => {
   }
 };
 
-const keepChange = (value: boolean) => cache.setCache("isKeepPassword", value);
+const keepChange = (value: CheckboxValueType) => {
+  cache.setCache("isKeepPassword", value);
+};
 </script>
 
 <style lang="less" module="login">

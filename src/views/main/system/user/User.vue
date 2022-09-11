@@ -1,17 +1,27 @@
 <template>
-  <div class="user">
-    <h2>user</h2>
+  <div :class="cssModule.user">
+    <div :class="cssModule['user-search']">
+      <BaseForm />
+    </div>
+    <div :class="cssModule['user-content']">主要内容</div>
   </div>
 </template>
+<script setup lang="ts">
+import { useCssModule } from "vue";
+import BaseForm from "@baseComponents/form";
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "user"
-});
+const cssModule = useCssModule();
 </script>
 
-<script setup lang="ts"></script>
+<style lang="less" module>
+.user {
+  height: 100%;
+  .user-search {
+    width: 100%;
+  }
 
-<style lang="less" module></style>
+  .user-content {
+    width: 100%;
+  }
+}
+</style>

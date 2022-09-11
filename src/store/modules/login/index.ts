@@ -10,7 +10,8 @@ const loginModule: Module<Store.LoginState, Store.RootState> = {
     return {
       token: "",
       userInfo: {},
-      userMenus: []
+      userMenus: [],
+      routes: []
     };
   },
   mutations: {
@@ -25,8 +26,11 @@ const loginModule: Module<Store.LoginState, Store.RootState> = {
     changeUserMenus(state, userMenus: RoleMenuType[]) {
       state.userMenus = userMenus;
       cache.setCache("userMenus", userMenus);
+    },
+    changeUserRoutes(state, userMenus: RoleMenuType[]) {
       // TODO: 根据菜单动态注册路由
       const routes = newMapMenus(userMenus);
+      state.routes = routes;
       routes.forEach((t) => router.addRoute("main", t));
     }
   },
@@ -45,7 +49,10 @@ const loginModule: Module<Store.LoginState, Store.RootState> = {
       const { data: menuList = [] } = await loginApi.queryUserMenus(
         data.role.id
       );
-      code !== 0 || commit("changeUserMenus", menuList);
+      if (menuList.length) {
+        commit("changeUserMenus", menuList);
+        commit("changeUserRoutes", menuList);
+      }
       // 4.跳转到首页
       router.push("/main");
     },
@@ -56,7 +63,14 @@ const loginModule: Module<Store.LoginState, Store.RootState> = {
       const userInfo = cache.getCache("userInfo");
       !userInfo || commit("changeUserInfo", userInfo);
       const userMenus = cache.getCache("userMenus");
-      !userMenus || commit("changeUserMenus", userMenus);
+      if (userMenus.length) {
+        commit("changeUserMenus", userMenus);
+        commit("changeUserRoutes", userMenus);
+      }
+    },
+    // 重置动态路由
+    resetRoutes({ commit }, payload: RoleMenuType[]) {
+      commit("changeUserRoutes", payload);
     }
   },
   getters: {}

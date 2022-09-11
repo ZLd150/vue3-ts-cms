@@ -4,18 +4,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
 import loginPanelVue from "./childComponents/login-panel.vue";
-
-export default defineComponent({
-  components: {
-    loginPanelVue
-  },
-  setup() {
-    return {};
-  }
-});
 </script>
 
 <style lang="less" module>

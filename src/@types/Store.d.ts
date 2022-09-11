@@ -2,6 +2,7 @@ declare namespace Store {
   export interface RootState {
     name: string;
     age: number;
+    login?: LoginState;
   }
 
   // 登录
@@ -9,6 +10,7 @@ declare namespace Store {
     token: string;
     userInfo: unknown;
     userMenus: unknown;
+    routes: unknown;
   }
 
   type LoginStoreType = {

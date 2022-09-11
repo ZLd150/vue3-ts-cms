@@ -93,5 +93,11 @@ export const newMapMenus = (menus: RoleMenuType[]): RouteRecordRaw[] => {
 
   recurseGetRoute(menus);
 
+  routes.push({
+    path: "/:pathMatch(.*)*",
+    name: "notFound",
+    component: () => import("@/views/not-found/NotFound.vue")
+  });
+
   return routes;
 };
