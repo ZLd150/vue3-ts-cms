@@ -5,7 +5,7 @@
       <span v-if="!isCollapse" :class="menu.title">Vu3+TS</span>
     </div>
     <el-menu
-      default-active="2"
+      :default-active="activeMenuId"
       :collapse="isCollapse"
       class="el-menu-vertical-demo"
       background-color="#0c2135"
@@ -51,26 +51,42 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps } from "vue";
+import { computed, ComputedRef, watch, ref } from "vue";
 import { useStore } from "@store/index";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
+import { pathMapToMenu } from "@utils/mapRouter";
 import type { RoleMenuType, RoleSecondLevelMenu } from "@api/login";
+import type { MenuType } from "@utils/mapRouter";
 
 const props = defineProps({
   collapse: { type: Boolean, default: false }
 });
 const router = useRouter();
+const route = useRoute();
 const store = useStore();
 const userMenus = computed(
   () => store.state.login.userMenus
-) as unknown as RoleMenuType[];
+) as unknown as ComputedRef<RoleMenuType[]>;
 
 const isCollapse = computed(() => props.collapse);
 
 const getName = (icon: string) => icon.split("-").slice(2).join("-");
 
-const changeMenuHandler = (item: RoleSecondLevelMenu) =>
+const changeMenuHandler = (item: RoleSecondLevelMenu) => {
   router.push({ path: item.url ?? "/not-found" });
+};
+
+const currentMenu = pathMapToMenu(userMenus.value, route.path) as MenuType;
+// 默认点击的菜单选项
+const activeMenuId = ref(currentMenu ? currentMenu.id + "" : "0");
+
+watch(
+  () => route.path,
+  (newVal: string) => {
+    const menu = pathMapToMenu(userMenus.value, newVal) as MenuType;
+    !menu || (activeMenuId.value = menu.id + "");
+  }
+);
 </script>
 
 <style lang="less" module="menu">

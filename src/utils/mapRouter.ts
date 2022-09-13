@@ -4,6 +4,7 @@ import type {
   RoleThreeLevelMenu
 } from "@/api/login";
 import type { RouteRecordRaw } from "vue-router";
+export type MenuType = RoleMenuType | RoleSecondLevelMenu | RoleThreeLevelMenu;
 // 二级菜单组件
 const dashboard = () => import("@views/main/analysis/dashboard/Dashboard.vue");
 const overview = () => import("@views/main/analysis/overview/Overview.vue");
@@ -47,9 +48,7 @@ export const mapMenus = (menus: RoleMenuType[]): RouteRecordRaw[] => {
     );
 
   // 2.根据菜单添加需要的route,递归
-  const recurseGetRoute = (
-    menus: RoleMenuType[] | RoleSecondLevelMenu[] | RoleThreeLevelMenu[]
-  ) => {
+  const recurseGetRoute = (menus: MenuType[]) => {
     for (const t of menus) {
       if (t.type === 2) {
         const route = allRoutes.find((route) => route.path === t.url);
@@ -72,9 +71,7 @@ export const newMapMenus = (menus: RoleMenuType[]): RouteRecordRaw[] => {
   const routes: RouteRecordRaw[] = [];
 
   // 递归
-  const recurseGetRoute = (
-    menus: RoleMenuType[] | RoleSecondLevelMenu[] | RoleThreeLevelMenu[]
-  ) => {
+  const recurseGetRoute = (menus: MenuType[]) => {
     for (const t of menus) {
       if (t.type === 2) {
         const nameArr = t.url?.split("/");
@@ -93,11 +90,22 @@ export const newMapMenus = (menus: RoleMenuType[]): RouteRecordRaw[] => {
 
   recurseGetRoute(menus);
 
-  routes.push({
-    path: "/:pathMatch(.*)*",
-    name: "notFound",
-    component: () => import("@/views/not-found/NotFound.vue")
-  });
-
   return routes;
+};
+
+/**
+ * 根据当前path获取到当前的菜单
+ * @param menus 菜单数组
+ * @param currentPath 当前路由地址
+ */
+export const pathMapToMenu = (
+  menus: MenuType[],
+  currentPath: string
+): unknown => {
+  for (const menu of menus) {
+    if (menu.type === 1) {
+      const findMenu = pathMapToMenu(menu.children ?? [], currentPath);
+      if (findMenu) return findMenu;
+    } else if (menu.type === 2 && menu.url === currentPath) return menu;
+  }
 };

@@ -1,16 +1,22 @@
 <template>
-  <div :class="mianModule['main']">
-    <el-container :class="mianModule['main-content']">
+  <div :class="mainModule['main']">
+    <el-container :class="mainModule['main-content']">
       <el-aside :width="isCollapse ? '60px' : '210px'">
         <NavMenu :collapse="isCollapse" />
       </el-aside>
-      <el-container :class="mianModule.page">
-        <el-header :class="mianModule['page-header']">
+      <el-container :class="mainModule.page">
+        <el-header :class="mainModule['page-header']">
           <NavHeader v-model="isCollapse" />
         </el-header>
-        <el-main :class="mianModule['page-content']">
-          <div :class="mianModule['page-content-main']">
-            <router-view></router-view>
+        <el-main :class="mainModule['page-content']">
+          <div :class="mainModule['page-content-main']">
+            <div
+              v-if="isMainPath"
+              :class="mainModule['page-content-main-placeholder']"
+            >
+              <span>~ 欢迎来到吃瓜系统 ~</span>
+            </div>
+            <router-view v-else></router-view>
           </div>
         </el-main>
       </el-container>
@@ -19,13 +25,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, computed } from "vue";
+import { useRoute } from "vue-router";
 import NavMenu from "@components/navMenu";
 import NavHeader from "@components/navHeader";
 
 const isCollapse = ref(false);
+const route = useRoute();
+const isMainPath = computed(() => route.path === "/main");
 </script>
 
-<style lang="less" module="mianModule">
+<style lang="less" module="mainModule">
 @import url("./App.less");
 </style>

@@ -1,13 +1,13 @@
 <template>
   <div :class="cssModule['base-form']">
-    <el-form label-width="100px">
+    <el-form :label-width="labelWidth + 'px'">
       <el-row>
-        <template v-for="t in items" :key="t.label">
-          <el-col :span="t.xs || 24">
-            <el-form-item :label="t.label">
+        <template v-for="{ label, rules = [], ...args } in items" :key="label">
+          <el-col v-bind="colLayout">
+            <el-form-item v-bind="{ label, rules, style: itemStyle }">
               <component
-                v-bind="t.props"
-                :is="components[t.controlType]"
+                v-bind="args.props"
+                :is="components[args.controlType]"
                 style="width: 100%"
               >
               </component>
@@ -20,23 +20,24 @@
 </template>
 
 <script setup lang="ts">
-import { useCssModule, defineProps, PropType, defineAsyncComponent } from "vue";
+import { useCssModule, PropType, defineAsyncComponent } from "vue";
 
 const props = defineProps({
   items: {
     type: Array as PropType<System.Form.FormItem[]>,
     default: () => []
+  },
+  labelWidth: { type: Number, default: 100 },
+  itemStyle: { type: Object, default: () => ({ padding: "10px 40px" }) },
+  colLayout: {
+    type: Object,
+    default: () => ({ xl: 6, lg: 8, md: 12, sm: 24, xs: 24 })
   }
 });
 const cssModule = useCssModule();
 const components: Record<string, ReturnType<typeof defineAsyncComponent>> = {
   input: defineAsyncComponent(() => import("element-plus/es/components/input")),
-  password: defineAsyncComponent(
-    () => import("element-plus/es/components/input")
-  ),
-  select: defineAsyncComponent(
-    () => import("element-plus/es/components/select")
-  ),
+  select: defineAsyncComponent(() => import("../components/Select.vue")),
   datepicker: defineAsyncComponent(
     () => import("element-plus/es/components/date-picker")
   )

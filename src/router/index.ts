@@ -18,6 +18,11 @@ const routes: RouteRecordRaw[] = [
     path: "/main",
     name: "main",
     component: () => import("@/views/main/Main.vue")
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "notFound",
+    component: () => import("@/views/not-found/NotFound.vue")
   }
 ];
 
@@ -30,12 +35,6 @@ const router = createRouter({
 router.beforeEach((to) => {
   const token = cache.getCache("token");
   if (to.path !== "/login" && !token) return "/login";
-  // const routes = store.state.login?.routes as RoleMenuType[];
-  // const menuList: RoleMenuType[] = cache.getCache("userMenus");
-  // if (!routes.length && menuList.length && token) {
-  //   store.dispatch("login/resetRoutes", menuList);
-  //   return to.fullPath;
-  // }
 });
 
 export { router as default };

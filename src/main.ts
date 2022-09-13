@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router/index";
-import store from "./store";
+import store, { setupStore } from "./store";
 import ElementPlus from "element-plus";
 import * as Icons from "@element-plus/icons-vue";
 
@@ -9,9 +9,11 @@ import "element-plus/dist/index.css";
 import "./assets/css/index.less";
 
 const app = createApp(App);
-app.use(router);
-app.use(store);
 app.use(ElementPlus);
+app.use(store);
+// TODO: 优先添加动态路由,避免刷新页面时路由匹配错误
+setupStore();
+app.use(router);
 // 注册图标
 Object.entries(Icons).forEach(([key, val]) => app.component(key, val));
 app.mount("#app");

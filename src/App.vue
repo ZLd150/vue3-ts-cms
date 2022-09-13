@@ -2,12 +2,6 @@
   <router-view></router-view>
 </template>
 
-<script lang="ts" setup>
-import { onMounted } from "vue";
-import store from "./store";
-
-const setupStore = () => store.dispatch("login/loadLocalLogin");
-onMounted(() => setupStore());
-</script>
+<script lang="ts" setup></script>
 
 <style lang="less"></style>

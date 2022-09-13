@@ -1,14 +1,19 @@
 declare namespace System {
   declare namespace Form {
-    type itemlType = "input" | "select" | "datepicker";
+    type ItemlType = "input" | "select" | "datepicker";
+    export type SelectType = {
+      label: string;
+      value: string | number | boolean;
+      disabled?: boolean;
+    };
     export type FormItem = {
-      controlType: itemlType;
+      controlType: ItemlType;
       name: string;
       xs?: number;
       label: string;
       props?: {
         placeholder?: string;
-        options?: any[];
+        options?: SelectType[];
         [key: string]: any;
       };
       on?: {
