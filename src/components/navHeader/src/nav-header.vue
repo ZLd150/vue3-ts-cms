@@ -10,7 +10,7 @@
     </el-icon>
     <div :class="cssModule.content">
       <!-- 面包屑导航 -->
-      <div>111</div>
+      <Breadcrumb :list="breadcrumbList" />
       <!-- 用户信息 -->
       <UserInfo />
     </div>
@@ -18,8 +18,19 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, computed, defineEmits, useCssModule } from "vue";
+import {
+  defineProps,
+  computed,
+  defineEmits,
+  useCssModule,
+  ComputedRef
+} from "vue";
+import { useStore } from "@store/index";
+import { useRoute } from "vue-router";
+import Breadcrumb from "@baseComponents/breadcrumb";
 import UserInfo from "./components/user-info.vue";
+import { pathMaptoBreadcrumb } from "@utils/mapRouter";
+import type { RoleMenuType } from "@api/login";
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false }
@@ -31,8 +42,16 @@ const isFold = computed({
 });
 
 const cssModule = useCssModule();
+const store = useStore();
+const route = useRoute();
 
 const changeState = () => (isFold.value = !isFold.value);
+const breadcrumbList: ComputedRef<System.Breadcrumb.ListItem[]> = computed(
+  () => {
+    const userMenus = store.state.login.userMenus as RoleMenuType[];
+    return pathMaptoBreadcrumb(userMenus, route.path);
+  }
+);
 </script>
 
 <style lang="less" module>

@@ -5,6 +5,7 @@ import type {
 } from "@/api/login";
 import type { RouteRecordRaw } from "vue-router";
 export type MenuType = RoleMenuType | RoleSecondLevelMenu | RoleThreeLevelMenu;
+export type BreadcrumbItem = System.Breadcrumb.ListItem;
 // 二级菜单组件
 const dashboard = () => import("@views/main/analysis/dashboard/Dashboard.vue");
 const overview = () => import("@views/main/analysis/overview/Overview.vue");
@@ -97,15 +98,37 @@ export const newMapMenus = (menus: RoleMenuType[]): RouteRecordRaw[] => {
  * 根据当前path获取到当前的菜单
  * @param menus 菜单数组
  * @param currentPath 当前路由地址
+ * @param breadcrumbList 面包屑地址数组
  */
 export const pathMapToMenu = (
   menus: MenuType[],
-  currentPath: string
+  currentPath: string,
+  breadcrumbList?: BreadcrumbItem[]
 ): unknown => {
   for (const menu of menus) {
     if (menu.type === 1) {
-      const findMenu = pathMapToMenu(menu.children ?? [], currentPath);
-      if (findMenu) return findMenu;
+      const findMenu = pathMapToMenu(
+        menu.children ?? [],
+        currentPath
+      ) as MenuType;
+      if (findMenu) {
+        breadcrumbList?.push({ name: menu.name }, { name: findMenu.name });
+        return findMenu;
+      }
     } else if (menu.type === 2 && menu.url === currentPath) return menu;
   }
+};
+
+/**
+ * 根据当前path获取面包屑地址数组
+ * @param menus 菜单数组
+ * @param currentPath 当前路由地址
+ */
+export const pathMaptoBreadcrumb = (
+  menus: MenuType[],
+  currentPath: string
+): BreadcrumbItem[] => {
+  const breadcrumbList: BreadcrumbItem[] = [];
+  pathMapToMenu(menus, currentPath, breadcrumbList);
+  return breadcrumbList;
 };

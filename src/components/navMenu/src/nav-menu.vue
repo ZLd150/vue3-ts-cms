@@ -64,11 +64,10 @@ const props = defineProps({
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
-const userMenus = computed(
-  () => store.state.login.userMenus
-) as unknown as ComputedRef<RoleMenuType[]>;
-
 const isCollapse = computed(() => props.collapse);
+const userMenus = computed(() => store.state.login.userMenus) as ComputedRef<
+  RoleMenuType[]
+>;
 
 const getName = (icon: string) => icon.split("-").slice(2).join("-");
 
@@ -76,17 +75,11 @@ const changeMenuHandler = (item: RoleSecondLevelMenu) => {
   router.push({ path: item.url ?? "/not-found" });
 };
 
-const currentMenu = pathMapToMenu(userMenus.value, route.path) as MenuType;
 // 默认点击的菜单选项
-const activeMenuId = ref(currentMenu ? currentMenu.id + "" : "0");
-
-watch(
-  () => route.path,
-  (newVal: string) => {
-    const menu = pathMapToMenu(userMenus.value, newVal) as MenuType;
-    !menu || (activeMenuId.value = menu.id + "");
-  }
-);
+const activeMenuId = computed(() => {
+  const currentMenu = pathMapToMenu(userMenus.value, route.path) as MenuType;
+  return currentMenu ? currentMenu.id + "" : "0";
+});
 </script>
 
 <style lang="less" module="menu">
