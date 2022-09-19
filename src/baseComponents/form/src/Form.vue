@@ -1,5 +1,10 @@
 <template>
   <div :class="cssModule['base-form']">
+    <!-- 头 -->
+    <div :class="cssModule['base-form-header']">
+      <slot name="header"></slot>
+    </div>
+    <!-- 表单 -->
     <el-form :label-width="labelWidth + 'px'">
       <el-row>
         <template v-for="{ label, rules = [], ...args } in items" :key="label">
@@ -9,6 +14,7 @@
                 v-bind="args.props"
                 :is="components[args.controlType]"
                 style="width: 100%"
+                v-model="values[args.name].value"
               >
               </component>
             </el-form-item>
@@ -16,11 +22,22 @@
         </template>
       </el-row>
     </el-form>
+    <!-- 尾 -->
+    <div :class="cssModule['base-form-footer']">
+      <slot name="footer"></slot>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useCssModule, PropType, defineAsyncComponent } from "vue";
+import {
+  useCssModule,
+  PropType,
+  defineAsyncComponent,
+  toRefs,
+  useAttrs,
+  reactive
+} from "vue";
 
 const props = defineProps({
   items: {
@@ -42,6 +59,22 @@ const components: Record<string, ReturnType<typeof defineAsyncComponent>> = {
     () => import("element-plus/es/components/date-picker")
   )
 };
+
+type AttrsType = {
+  formData: Record<string, unknown>;
+  [x: string]: unknown;
+};
+const attrs = useAttrs() as AttrsType;
+const values = toRefs(attrs.formData ? attrs.formData : reactive({}));
+// const emits = defineEmits(["update:modelValue"]);
+// const formValues = reactive({ ...props.modelValue });
+// watch(
+//   formValues,
+//   (newValues) => {
+//     emits("update:modelValue", newValues);
+//   },
+//   { deep: true }
+// );
 </script>
 
 <style lang="less" module>

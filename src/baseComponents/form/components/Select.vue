@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, PropType } from "vue";
+import { PropType } from "vue";
 
 const props = defineProps({
   options: {
