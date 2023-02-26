@@ -1,8 +1,7 @@
 declare namespace Store {
   export interface RootState {
-    name: string;
-    age: number;
     login?: LoginState;
+    system?: SystemState;
   }
 
   // 登录
@@ -17,4 +16,10 @@ declare namespace Store {
   };
 
   export type StoreType = LoginStoreType & RootState;
+
+  // 系统管理
+  export interface SystemState {
+    userList: unknown;
+    userCount: number;
+  }
 }

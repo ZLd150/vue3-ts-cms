@@ -82,3 +82,5 @@ export const userFormConfig: userFormConfigType = {
   colLayout: { span: 8 },
   items: formItems
 };
+
+export const columns: System.Tabel.TabelItem[] = [];

@@ -1,17 +1,15 @@
 import { createStore, Store, useStore as useVuexStore } from "vuex";
 import login from "./modules/login";
+import system from "./modules/main/system";
 
 const store = createStore<Store.RootState>({
   state: () => {
-    return {
-      name: "zl",
-      age: 29
-    };
+    return {};
   },
   mutations: {},
   actions: {},
   getters: {},
-  modules: { login }
+  modules: { login, system }
 });
 
 const useStore = (): Store<Store.StoreType> => useVuexStore();
