@@ -15,6 +15,35 @@ export interface QueryInfo {
   size: number;
 }
 
+export interface RoleItem {
+  id: number;
+  name: string;
+  intro: string;
+  createAt: string;
+  updateAt: string;
+  menuList: MenuList[];
+}
+
+interface MenuList {
+  id: number;
+  name: string;
+  type: number;
+  url: string;
+  icon: string;
+  sort: number;
+  children: Child[];
+}
+
+interface Child {
+  id: number;
+  url: string;
+  name: string;
+  sort: number;
+  type: number;
+  children?: any;
+  parentId: number;
+}
+
 class SystemApi {
   /**
    * 请求用户列表

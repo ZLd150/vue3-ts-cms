@@ -14,7 +14,8 @@
                 v-bind="args.props"
                 :is="components[args.controlType]"
                 style="width: 100%"
-                v-model="values[args.name].value"
+                :modelValue="values[args.name]"
+                @update:modelValue="(val:any) => values[args.name] = val"
               >
               </component>
             </el-form-item>
@@ -30,20 +31,16 @@
 </template>
 
 <script setup lang="ts">
-import {
-  useCssModule,
-  PropType,
-  defineAsyncComponent,
-  toRefs,
-  useAttrs,
-  reactive
-} from "vue";
+import { useCssModule, reactive, PropType, defineAsyncComponent } from "vue";
+
+import { watchDebounced } from "@vueuse/core";
 
 const props = defineProps({
   items: {
     type: Array as PropType<System.Form.FormItem[]>,
     default: () => []
   },
+  form: { type: Object as PropType<Record<string, any>>, default: () => ({}) },
   labelWidth: { type: Number, default: 100 },
   itemStyle: { type: Object, default: () => ({ padding: "10px 40px" }) },
   colLayout: {
@@ -51,6 +48,8 @@ const props = defineProps({
     default: () => ({ xl: 6, lg: 8, md: 12, sm: 24, xs: 24 })
   }
 });
+const emits = defineEmits(["update:form"]);
+
 const cssModule = useCssModule();
 const components: Record<string, ReturnType<typeof defineAsyncComponent>> = {
   input: defineAsyncComponent(() => import("element-plus/es/components/input")),
@@ -60,21 +59,11 @@ const components: Record<string, ReturnType<typeof defineAsyncComponent>> = {
   )
 };
 
-type AttrsType = {
-  formData: Record<string, unknown>;
-  [x: string]: unknown;
-};
-const attrs = useAttrs() as AttrsType;
-const values = toRefs(attrs.formData ? attrs.formData : reactive({}));
-// const emits = defineEmits(["update:modelValue"]);
-// const formValues = reactive({ ...props.modelValue });
-// watch(
-//   formValues,
-//   (newValues) => {
-//     emits("update:modelValue", newValues);
-//   },
-//   { deep: true }
-// );
+const values = reactive({ ...props.form });
+// 防抖监听
+watchDebounced(values, (val: typeof values) => emits("update:form", val), {
+  debounce: 500
+});
 </script>
 
 <style lang="less" module>

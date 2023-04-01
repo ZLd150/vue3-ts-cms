@@ -15,7 +15,7 @@ const chat = () => import("@views/main/story/chat/Chat.vue");
 const list = () => import("@views/main/story/list/List.vue");
 const department = () => import("@views/main/system/department/Department.vue");
 const menu = () => import("@views/main/system/menu/Menu.vue");
-const role = () => import("@views/main/system/role/Role.vue");
+const role = () => import("@/views/main/system/role/Role");
 const user = () => import("@/views/main/system/user/User");
 
 export const vueComponents = {

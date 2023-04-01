@@ -3,13 +3,16 @@ import App from "./App.vue";
 import router from "./router/index";
 import store, { setupStore } from "./store";
 import ElementPlus from "element-plus";
+import zhCn from "element-plus/dist/locale/zh-cn.mjs";
 import * as Icons from "@element-plus/icons-vue";
 
 import "element-plus/dist/index.css";
 import "./assets/css/index.less";
 
 const app = createApp(App);
-app.use(ElementPlus);
+app.use(ElementPlus, {
+  locale: zhCn
+});
 app.use(store);
 // TODO: 优先添加动态路由,避免刷新页面时路由匹配错误
 setupStore();

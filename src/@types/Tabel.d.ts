@@ -3,12 +3,18 @@ declare namespace System {
     type ItemlType = "input" | "select" | "datepicker";
 
     export type TabelItem = {
-      filed: string;
+      prop?: string;
       label: string;
-      width: number;
       align: "left" | "center" | "right";
+      width?: string | number;
+      minWidth?: string | number;
+      type?: "selection" | "index" | "expand";
       visible?: boolean;
-      renderer?(value: any, data?: Record<string, any>): any;
+      slot?: boolean | Record<string, Function>;
+      renderer?:
+        | string
+        | JSX
+        | ((value: string, data?: Record<string, any>, index?: number) => any);
     };
   }
 }

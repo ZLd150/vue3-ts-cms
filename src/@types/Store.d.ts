@@ -19,7 +19,9 @@ declare namespace Store {
 
   // 系统管理
   export interface SystemState {
-    userList: unknown;
-    userCount: number;
+    usersList: any[];
+    usersList: number;
+    roleList: any[];
+    roleCount: number;
   }
 }

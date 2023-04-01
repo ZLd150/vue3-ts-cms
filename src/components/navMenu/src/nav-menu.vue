@@ -90,7 +90,7 @@ const activeMenuId = computed(() => {
 .logo {
   display: flex;
   height: 28px;
-  padding: 12px 10px 8px 10px;
+  margin: 12px 10px 8px 10px;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;

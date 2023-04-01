@@ -1,42 +1,37 @@
-import { ref, reactive, computed, defineComponent, watch } from "vue";
+import { ref, defineComponent, computed } from "vue";
 import { useStore } from "@/store";
-import { userFormConfig, columns } from "./config/field";
+import { roleFormConfig, columns } from "./config/field";
 import Table from "@baseComponents/table";
 import ToolBar from "@baseComponents/toolbar";
 import BaseForm from "@baseComponents/form";
 import { Delete, Edit, Refresh } from "@element-plus/icons-vue";
 import $style from "./App.module.less";
 
-import type { UserItem } from "@/api/main/system";
+import type { RoleItem } from "@/api/main/system";
 
 export default defineComponent({
-  props: {},
   emits: [],
   setup(props, { slots, expose, attrs, emit }) {
     const store = useStore();
     const loading = ref(false);
     const searchValues = ref({
-      userId: "",
-      userName: "",
-      realName: "",
-      phone: "",
-      status: "",
-      createDate: ""
+      name: "",
+      intro: "",
+      createTime: ""
     });
-    const userList = computed<UserItem[]>(() =>
-      store.getters["system/pageListData"]("users")
+    const roleList = computed<RoleItem[]>(() =>
+      store.getters["system/pageListData"]("role")
     );
-    const userCount = computed<number>(() =>
-      store.getters["system/pageCount"]("users")
+    const roleCount = computed<number>(() =>
+      store.getters["system/pageCount"]("role")
     );
     const pageSize = ref(20);
-
-    // 请求用户列表数据
-    const queryUserList = () => {
+    // 请求角色列表数据
+    const queryRoleList = () => {
       loading.value = true;
       store
         .dispatch("system/getPageListAction", {
-          pageName: "users",
+          pageName: "role",
           queryInfo: {
             offset: 0,
             size: pageSize.value
@@ -47,14 +42,6 @@ export default defineComponent({
 
     // column slot
     const getSlot = () => ({
-      enable: (val: number) => (
-        <el-button
-          size="small"
-          plain
-          type={val ? "success" : "danger"}
-          innerText={val ? "启用" : "禁用"}
-        ></el-button>
-      ),
       operation: () => (
         <>
           <el-button type="primary" size="small">
@@ -76,9 +63,9 @@ export default defineComponent({
     const headerSlot = () => (
       <ToolBar
         v-slots={{
-          start: () => <el-button type="primary" innerText="新增用户" />,
+          start: () => <el-button type="primary" innerText="新增角色" />,
           end: () => (
-            <el-button icon={Refresh} circle onClick={() => queryUserList()} />
+            <el-button icon={Refresh} circle onClick={() => queryRoleList()} />
           )
         }}
       />
@@ -97,14 +84,13 @@ export default defineComponent({
       )
     });
 
-    // 请求数据
-    queryUserList();
+    queryRoleList();
     return () => (
-      <div class={$style.user}>
+      <div class={$style.role}>
         {/* 搜索模块 */}
         <div class={$style["user-form"]}>
           <BaseForm
-            {...userFormConfig}
+            {...roleFormConfig}
             v-model={[searchValues.value, "form"]}
             v-slots={{ ...formSlots() }}
           />
@@ -112,11 +98,11 @@ export default defineComponent({
         {/* 隔离盒子 */}
         <div style="height: 20px; background: #f5f5f5;"></div>
         {/* 内容模块 */}
-        <div class={$style["user-content"]}>
+        <div class={$style["role-content"]}>
           <Table
-            items={userList.value}
+            items={roleList.value}
             fields={columns}
-            total={userCount.value}
+            total={roleCount.value}
             v-slots={{ header: () => headerSlot(), ...getSlot() }}
             loading={loading.value}
             header
