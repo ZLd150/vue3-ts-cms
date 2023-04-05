@@ -19,7 +19,7 @@ const formItems: System.Form.FormItem[] = [
   },
   {
     controlType: "datepicker",
-    name: "createTime",
+    name: "createAt",
     label: "创建时间",
     xs: 8,
     props: {
@@ -40,10 +40,10 @@ export const roleFormConfig = {
 
 export const columns: System.Tabel.TabelItem[] = [
   {
-    type: "index",
     label: "序号",
     align: "center",
-    width: 60
+    width: 60,
+    renderer: "TABLEPAGEINDEX"
   },
   {
     prop: "name",

@@ -10,16 +10,7 @@ type userFormConfigType = {
 const formItems: System.Form.FormItem[] = [
   {
     controlType: "input",
-    name: "userId",
-    label: "ID",
-    xs: 8,
-    props: {
-      placeholder: "请输入查询ID！"
-    }
-  },
-  {
-    controlType: "input",
-    name: "userName",
+    name: "name",
     label: "用户名",
     xs: 8,
     props: {
@@ -37,7 +28,7 @@ const formItems: System.Form.FormItem[] = [
   },
   {
     controlType: "input",
-    name: "phone",
+    name: "cellPhone",
     label: "电话号码",
     xs: 8,
     props: {
@@ -46,26 +37,26 @@ const formItems: System.Form.FormItem[] = [
   },
   {
     controlType: "select",
-    name: "status",
+    name: "enable",
     label: "状态",
     xs: 8,
     props: {
       placeholder: "请选择状态！",
       options: [
         {
-          label: "正常",
-          value: "normal"
+          label: "启用",
+          value: 1
         },
         {
-          label: "异常",
-          value: "abnormal"
+          label: "禁用",
+          value: 0
         }
       ]
     }
   },
   {
     controlType: "datepicker",
-    name: "createDate",
+    name: "createAt",
     label: "创建时间",
     xs: 8,
     props: {
@@ -87,10 +78,10 @@ export const userFormConfig: userFormConfigType = {
 
 export const columns: System.Tabel.TabelItem[] = [
   {
-    type: "index",
     label: "序号",
     align: "center",
-    width: 60
+    width: 60,
+    renderer: "TABLEPAGEINDEX"
   },
   {
     prop: "name",

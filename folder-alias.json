@@ -1,1 +1,5 @@
-{}
+{
+    "src/hooks/usePageValues.ts": {
+        "description": "页面默认表单值"
+    }
+}

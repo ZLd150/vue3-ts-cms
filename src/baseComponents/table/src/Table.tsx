@@ -9,24 +9,34 @@ type DefaultSlot = {
   $index: number;
 };
 type CommonObj = { [key: string]: any };
-type RenderUtils = Record<
-  string,
-  (val: string, row: CommonObj, index: number) => any
->;
+type RenderUtils = Record<string, (...args: any[]) => any>;
 
 const getHTML = (
   val: any,
   row: CommonObj,
   index: number,
+  currentPage: number,
+  pageSize: number,
   data: System.Tabel.TabelItem
 ) => {
   const { renderer } = data;
   if (typeof renderer === "string") {
-    return (renderUtils as RenderUtils)[renderer](val, row, index);
+    return (renderUtils as RenderUtils)[renderer](
+      val,
+      row,
+      index,
+      currentPage,
+      pageSize
+    );
   } else if (typeof renderer === "function") {
-    return renderer(val, row, index);
+    return renderer(val, row, index, currentPage, pageSize);
   }
   return "";
+};
+
+type PageInfo = {
+  currentPage: number;
+  pageSize: number;
 };
 
 export default defineComponent({
@@ -47,7 +57,10 @@ export default defineComponent({
     loading: { type: Boolean, default: false },
     border: { type: Boolean, default: true },
     total: { type: Number, default: 0 },
-    pageSize: { type: Number, default: 20 }
+    pageInfo: {
+      type: Object as PropType<PageInfo>,
+      default: () => ({ currentPage: 1, pageSize: 20 })
+    }
   },
   emits: [
     "select",
@@ -56,7 +69,7 @@ export default defineComponent({
     "row-click",
     "row-contextmenu",
     "expand-change",
-    "update:page-size"
+    "update:pageInfo"
   ],
   setup(props, { slots, expose, emit }) {
     const table = ref();
@@ -65,22 +78,20 @@ export default defineComponent({
       table: () => table.value
     };
     expose(tableAPI);
-    // 分页器相关
-    const currentPage = ref(1);
-
-    // page change
-    const pageChange = (val: number) => {
-      console.log("pageChange>>>", val);
-      currentPage.value = val;
-    };
-    // page size change
-    const sizeChange = (val: number) => {
-      emit("update:page-size", val);
-    };
     // pagination emit
     const emitAttr = {
-      "onUpdate:current-page": (v: number) => pageChange(v),
-      "onUpdate:page-size": (v: number) => sizeChange(v)
+      "onUpdate:current-page": (v: number) => {
+        emit(
+          "update:pageInfo",
+          Object.assign({ ...props.pageInfo }, { currentPage: v })
+        );
+      },
+      "onUpdate:page-size": (v: number) => {
+        emit(
+          "update:pageInfo",
+          Object.assign({ ...props.pageInfo }, { pageSize: v })
+        );
+      }
     };
 
     return () => (
@@ -132,7 +143,16 @@ export default defineComponent({
                       return (
                         <div
                           innerHTML={
-                            t.renderer ? getHTML(value, row, index, t) : value
+                            t.renderer
+                              ? getHTML(
+                                  value,
+                                  row,
+                                  index,
+                                  props.pageInfo.currentPage,
+                                  props.pageInfo.pageSize,
+                                  t
+                                )
+                              : value
                           }
                         ></div>
                       );
@@ -150,9 +170,8 @@ export default defineComponent({
               <div class={$style.pagination}>
                 {/* 分页器 */}
                 <el-pagination
-                  currentPage={currentPage.value}
-                  pageSize={props.pageSize}
-                  pageSizes={[10, 20, 50, 100, 200]}
+                  {...props.pageInfo}
+                  pageSizes={[10, 20, 30, 40, 50]}
                   background
                   layout="total, sizes, prev, pager, next, jumper"
                   total={props.total}

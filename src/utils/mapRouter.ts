@@ -10,7 +10,7 @@ export type BreadcrumbItem = System.Breadcrumb.ListItem;
 const dashboard = () => import("@views/main/analysis/dashboard/Dashboard.vue");
 const overview = () => import("@views/main/analysis/overview/Overview.vue");
 const category = () => import("@views/main/product/category/Category.vue");
-const goods = () => import("@views/main/product/goods/Goods.vue");
+const goods = () => import("@/views/main/product/goods/Goods");
 const chat = () => import("@views/main/story/chat/Chat.vue");
 const list = () => import("@views/main/story/list/List.vue");
 const department = () => import("@views/main/system/department/Department.vue");

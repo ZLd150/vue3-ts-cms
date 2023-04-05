@@ -13,7 +13,9 @@ const systemModule: Module<Store.SystemState, Store.RootState> = {
       usersList: [],
       usersCount: 0,
       roleList: [],
-      roleCount: 0
+      roleCount: 0,
+      goodsList: [],
+      goodsCount: 0
     };
   },
   getters: {
@@ -41,7 +43,7 @@ const systemModule: Module<Store.SystemState, Store.RootState> = {
   actions: {
     async getPageListAction({ commit }, payload: payloadType) {
       const { pageName, queryInfo } = payload;
-      // 请求用户列表
+      // 请求数据列表
       const {
         data: { list, totalCount }
       } = await systemApi.getPageListData("/" + pageName + "/list", queryInfo);

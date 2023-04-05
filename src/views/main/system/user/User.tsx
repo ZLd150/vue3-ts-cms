@@ -1,4 +1,4 @@
-import { ref, reactive, computed, defineComponent, watch } from "vue";
+import { ref, computed, defineComponent } from "vue";
 import { useStore } from "@/store";
 import { userFormConfig, columns } from "./config/field";
 import Table from "@baseComponents/table";
@@ -9,38 +9,47 @@ import $style from "./App.module.less";
 
 import type { UserItem } from "@/api/main/system";
 
+// 默认值
+const defaultValues = () => ({
+  name: "",
+  realName: "",
+  cellPhone: "",
+  enable: "",
+  createAt: ""
+});
+
 export default defineComponent({
   props: {},
   emits: [],
   setup(props, { slots, expose, attrs, emit }) {
     const store = useStore();
     const loading = ref(false);
-    const searchValues = ref({
-      userId: "",
-      userName: "",
-      realName: "",
-      phone: "",
-      status: "",
-      createDate: ""
-    });
+    const searchValues = ref(defaultValues());
     const userList = computed<UserItem[]>(() =>
       store.getters["system/pageListData"]("users")
     );
     const userCount = computed<number>(() =>
       store.getters["system/pageCount"]("users")
     );
-    const pageSize = ref(20);
+    const pageInfo = ref({
+      currentPage: 1,
+      pageSize: 20
+    });
 
     // 请求用户列表数据
     const queryUserList = () => {
       loading.value = true;
+      const { currentPage, pageSize } = pageInfo.value;
       store
         .dispatch("system/getPageListAction", {
           pageName: "users",
-          queryInfo: {
-            offset: 0,
-            size: pageSize.value
-          }
+          queryInfo: Object.assign(
+            {
+              offset: (currentPage - 1) * pageSize,
+              size: pageSize
+            },
+            { ...searchValues.value }
+          )
         })
         .finally(() => (loading.value = false));
     };
@@ -87,15 +96,38 @@ export default defineComponent({
     const formSlots = () => ({
       footer: () => (
         <>
-          <el-button type="success" auto-insert-space icon="Refresh">
-            重置
-          </el-button>
-          <el-button type="primary" auto-insert-space icon="Search">
+          <el-button
+            type="primary"
+            auto-insert-space
+            icon="Search"
+            onClick={() => queryUserList()}
+          >
             查询
+          </el-button>
+          <el-button
+            type="success"
+            auto-insert-space
+            icon="Refresh"
+            onClick={() => reset()}
+          >
+            重置
           </el-button>
         </>
       )
     });
+    // reset form
+    const reset = () => {
+      Object.assign(searchValues.value, defaultValues());
+      queryUserList();
+    };
+    // child component emit event
+    const childEmits = {
+      // pageinfo change
+      "onUpdate:pageInfo": (values: typeof pageInfo.value) => {
+        Object.assign(pageInfo.value, { ...values });
+        queryUserList();
+      }
+    };
 
     // 请求数据
     queryUserList();
@@ -120,7 +152,8 @@ export default defineComponent({
             v-slots={{ header: () => headerSlot(), ...getSlot() }}
             loading={loading.value}
             header
-            v-model={[pageSize.value, "pageSize"]}
+            pageInfo={pageInfo.value}
+            {...childEmits}
           />
         </div>
       </div>

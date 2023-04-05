@@ -10,11 +10,17 @@ declare namespace System {
       minWidth?: string | number;
       type?: "selection" | "index" | "expand";
       visible?: boolean;
-      slot?: boolean | Record<string, Function>;
+      slot?: boolean | Record<string, (...args: any[]) => JSX>;
       renderer?:
         | string
         | JSX
-        | ((value: string, data?: Record<string, any>, index?: number) => any);
+        | ((
+            value: string,
+            data?: Record<string, any>,
+            index?: number,
+            curPage?: number,
+            pageSize?: number
+          ) => any);
     };
   }
 }

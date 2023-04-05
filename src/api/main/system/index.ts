@@ -24,6 +24,23 @@ export interface RoleItem {
   menuList: MenuList[];
 }
 
+export interface GoodsItem {
+  id: number;
+  name: string;
+  oldPrice: string;
+  newPrice: string;
+  desc: string;
+  status: number;
+  imgUrl: string;
+  inventoryCount: number;
+  saleCount: number;
+  favorCount: number;
+  address: string;
+  categoryId: number;
+  createAt: string;
+  updateAt: string;
+}
+
 interface MenuList {
   id: number;
   name: string;
@@ -54,7 +71,12 @@ class SystemApi {
   static async getPageListData(
     url: string,
     queryInfo: QueryInfo
-  ): Promise<System.ResponseGeneric<{ list: UserItem[]; totalCount: number }>> {
+  ): Promise<
+    System.ResponseGeneric<{
+      list: (UserItem | RoleItem | GoodsItem)[];
+      totalCount: number;
+    }>
+  > {
     return await request.post({ url, data: queryInfo });
   }
 }
