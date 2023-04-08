@@ -21,7 +21,7 @@ export interface RoleItem {
   intro: string;
   createAt: string;
   updateAt: string;
-  menuList: MenuList[];
+  menuList: MenuItem[];
 }
 
 export interface GoodsItem {
@@ -41,7 +41,7 @@ export interface GoodsItem {
   updateAt: string;
 }
 
-interface MenuList {
+export interface MenuItem {
   id: number;
   name: string;
   type: number;

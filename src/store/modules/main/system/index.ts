@@ -1,9 +1,16 @@
 import { Module } from "vuex";
-import systemApi, { QueryInfo, UserItem, RoleItem } from "@/api/main/system";
+import systemApi, {
+  QueryInfo,
+  UserItem,
+  RoleItem,
+  GoodsItem,
+  MenuItem
+} from "@/api/main/system";
 
-type Stare = Record<string, any>;
+type State = Record<string, any>;
+type PageData = UserItem | RoleItem | GoodsItem | MenuItem;
 type payloadType = { pageName: string; queryInfo: QueryInfo };
-type PageDataListPayload = { [key: string]: (UserItem | RoleItem)[] };
+type PageDataListPayload = { [key: string]: PageData[] };
 type PageDataCountPayload = { [key: string]: number };
 
 const systemModule: Module<Store.SystemState, Store.RootState> = {
@@ -15,27 +22,29 @@ const systemModule: Module<Store.SystemState, Store.RootState> = {
       roleList: [],
       roleCount: 0,
       goodsList: [],
-      goodsCount: 0
+      goodsCount: 0,
+      menuList: [],
+      menuCount: 0
     };
   },
   getters: {
-    pageListData(state: Stare) {
+    pageListData(state: State) {
       return (pageName: string): any[] => {
         return state[pageName + "List"];
       };
     },
-    pageCount(state: Stare) {
+    pageCount(state: State) {
       return (pageName: string): number => {
         return state[pageName + "Count"];
       };
     }
   },
   mutations: {
-    changePageDataList(state: Stare, payload: PageDataListPayload) {
+    changePageDataList(state: State, payload: PageDataListPayload) {
       const [[key, value]] = Object.entries(payload);
       state[key] = value;
     },
-    changePageDataCount(state: Stare, payload: PageDataCountPayload) {
+    changePageDataCount(state: State, payload: PageDataCountPayload) {
       const [[key, value]] = Object.entries(payload);
       state[key] = value;
     }
@@ -48,7 +57,9 @@ const systemModule: Module<Store.SystemState, Store.RootState> = {
         data: { list, totalCount }
       } = await systemApi.getPageListData("/" + pageName + "/list", queryInfo);
       commit("changePageDataList", { [pageName + "List"]: list });
-      commit("changePageDataCount", { [pageName + "Count"]: totalCount });
+      commit("changePageDataCount", {
+        [pageName + "Count"]: totalCount ?? list.length
+      });
     }
   }
 };

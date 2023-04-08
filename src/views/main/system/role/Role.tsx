@@ -4,7 +4,6 @@ import { roleFormConfig, columns } from "./config/field";
 import Table from "@baseComponents/table";
 import ToolBar from "@baseComponents/toolbar";
 import BaseForm from "@baseComponents/form";
-import { Delete, Edit, Refresh } from "@element-plus/icons-vue";
 import $style from "./App.module.less";
 
 import type { RoleItem } from "@/api/main/system";
@@ -54,16 +53,10 @@ export default defineComponent({
     const getSlot = () => ({
       operation: () => (
         <>
-          <el-button type="primary" size="small">
-            <el-icon class="el-icon--left">
-              <Edit />
-            </el-icon>
+          <el-button type="primary" icon="Edit">
             编辑
           </el-button>
-          <el-button type="danger" size="small">
-            <el-icon class="el-icon--left">
-              <Delete />
-            </el-icon>
+          <el-button type="danger" icon="Delete">
             删除
           </el-button>
         </>
@@ -75,7 +68,7 @@ export default defineComponent({
         v-slots={{
           start: () => <el-button type="primary" innerText="新增角色" />,
           end: () => (
-            <el-button icon={Refresh} circle onClick={() => queryRoleList()} />
+            <el-button icon="Refresh" circle onClick={() => queryRoleList()} />
           )
         }}
       />
@@ -123,7 +116,7 @@ export default defineComponent({
     return () => (
       <div class={$style.role}>
         {/* 搜索模块 */}
-        <div class={$style["user-form"]}>
+        <div class={$style["search-form"]}>
           <BaseForm
             {...roleFormConfig}
             v-model={[searchValues.value, "form"]}

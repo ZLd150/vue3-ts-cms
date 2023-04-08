@@ -6,6 +6,12 @@
 
   .table-content {
     flex: 1;
+
+    :global {
+      .el-table__cell {
+        z-index: inherit !important;
+      }
+    }
   }
 
   .footer {

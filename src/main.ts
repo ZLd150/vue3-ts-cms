@@ -2,9 +2,9 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router/index";
 import store, { setupStore } from "./store";
+import icons from "./plugins/icons";
 import ElementPlus from "element-plus";
 import zhCn from "element-plus/dist/locale/zh-cn.mjs";
-import * as Icons from "@element-plus/icons-vue";
 
 import "element-plus/dist/index.css";
 import "./assets/css/index.less";
@@ -17,8 +17,9 @@ app.use(store);
 // TODO: 优先添加动态路由,避免刷新页面时路由匹配错误
 setupStore();
 app.use(router);
-// 注册图标
-Object.entries(Icons).forEach(([key, val]) => app.component(key, val));
+// 注册全局icons
+app.use(icons);
+
 app.mount("#app");
 
 // console.log("VUE_APP_BASE_URL>>>", process.env.VUE_APP_BASE_URL);

@@ -25,5 +25,7 @@ declare namespace Store {
     roleCount: number;
     goodsList: any[];
     goodsCount: number;
+    menuList: any[];
+    menuCount: number;
   }
 }

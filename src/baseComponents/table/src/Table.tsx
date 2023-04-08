@@ -1,4 +1,6 @@
-import { ref, defineComponent, PropType, computed } from "vue";
+import { ref, defineComponent, PropType, watch } from "vue";
+import { ElTable } from "element-plus";
+
 import * as renderUtils from "@/utils/renderUtils";
 
 import $style from "./App.module.less";
@@ -71,13 +73,9 @@ export default defineComponent({
     "expand-change",
     "update:pageInfo"
   ],
-  setup(props, { slots, expose, emit }) {
-    const table = ref();
+  setup(props, { slots, expose, emit, attrs }) {
+    const table = ref<InstanceType<typeof ElTable>>();
     const { header, footer } = slots;
-    const tableAPI = {
-      table: () => table.value
-    };
-    expose(tableAPI);
     // pagination emit
     const emitAttr = {
       "onUpdate:current-page": (v: number) => {
@@ -93,12 +91,26 @@ export default defineComponent({
         );
       }
     };
+    // reset table scroll position
+    const resetTableScroll = () => table.value?.setScrollTop(0);
+
+    const tableAPI = {
+      table: () => table.value,
+      resetTableScroll
+    };
+    expose(tableAPI);
+
+    watch(
+      () => props.loading,
+      (v) => v && setTimeout(() => resetTableScroll(), 270)
+    );
 
     return () => (
       <div class={$style.table}>
         {/* 工具栏 */}
         {props.header && header?.()}
         <el-table
+          {...attrs}
           data={props.items}
           ref={table}
           class={$style["table-content"]}
@@ -141,7 +153,7 @@ export default defineComponent({
                       return slot.body?.(value, row, index);
                     } else {
                       return (
-                        <div
+                        <span
                           innerHTML={
                             t.renderer
                               ? getHTML(
@@ -154,7 +166,7 @@ export default defineComponent({
                                 )
                               : value
                           }
-                        ></div>
+                        ></span>
                       );
                     }
                   }
