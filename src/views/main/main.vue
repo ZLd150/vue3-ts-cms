@@ -27,12 +27,15 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
+import { useStart } from "@hooks/useSystem";
 import NavMenu from "@components/navMenu";
 import NavHeader from "@components/navHeader";
 
 const isCollapse = ref(false);
 const route = useRoute();
 const isMainPath = computed(() => route.path === "/main");
+// 初始数据
+useStart();
 </script>
 
 <style lang="less" module="mainModule">

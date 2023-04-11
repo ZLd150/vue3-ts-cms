@@ -77,10 +77,20 @@ export default defineComponent({
       },
       operation: () => (
         <>
-          <el-button type="primary" icon="Edit" size="small">
+          <el-button
+            type="primary"
+            icon="Edit"
+            size="small"
+            v-permission={"system:menu:update"}
+          >
             编辑
           </el-button>
-          <el-button type="danger" icon="Delete" size="small">
+          <el-button
+            type="danger"
+            icon="Delete"
+            size="small"
+            v-permission={"system:menu:delete"}
+          >
             删除
           </el-button>
         </>
@@ -90,7 +100,13 @@ export default defineComponent({
     const headerSlot = () => (
       <ToolBar
         v-slots={{
-          start: () => <el-button type="primary" innerText="新增菜单" />,
+          start: () => (
+            <el-button
+              v-permission={"system:menu:create"}
+              type="primary"
+              innerText="新增菜单"
+            />
+          ),
           end: () => (
             <el-button icon="Refresh" circle onClick={() => queryMenuList()} />
           )

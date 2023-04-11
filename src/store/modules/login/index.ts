@@ -2,7 +2,9 @@ import router from "@/router";
 import { Module } from "vuex";
 import cache from "@/utils/cache";
 import loginApi, { UserInfoType, RoleMenuType } from "@/api/login";
-import { newMapMenus } from "@utils/mapRouter";
+import { newMapMenus, menuMapPermission } from "@utils/mapRouter";
+
+type State = Record<string, any>;
 
 const loginModule: Module<Store.LoginState, Store.RootState> = {
   namespaced: true,
@@ -10,8 +12,14 @@ const loginModule: Module<Store.LoginState, Store.RootState> = {
     return {
       token: "",
       userInfo: {},
-      userMenus: []
+      userMenus: [],
+      permissionList: []
     };
+  },
+  getters: {
+    userBaseInfo(state: State): Record<string, any> {
+      return { ...state };
+    }
   },
   mutations: {
     changeToken(state, token: string) {
@@ -25,9 +33,11 @@ const loginModule: Module<Store.LoginState, Store.RootState> = {
     changeUserMenus(state, userMenus: RoleMenuType[]) {
       state.userMenus = userMenus;
       cache.setCache("userMenus", userMenus);
-      // TODO: 根据菜单动态注册路由
+      // 根据菜单动态注册路由
       const routes = newMapMenus(userMenus);
       routes.forEach((t) => router.addRoute("main", t));
+      // 根据菜单生成权限数组
+      state.permissionList = menuMapPermission(userMenus);
     }
   },
   actions: {
@@ -62,8 +72,7 @@ const loginModule: Module<Store.LoginState, Store.RootState> = {
     resetRoutes({ commit }, payload: RoleMenuType[]) {
       commit("changeUserRoutes", payload);
     }
-  },
-  getters: {}
+  }
 };
 
 export { loginModule as default };

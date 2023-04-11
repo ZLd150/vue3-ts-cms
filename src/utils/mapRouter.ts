@@ -132,3 +132,24 @@ export const pathMaptoBreadcrumb = (
   pathMapToMenu(menus, currentPath, breadcrumbList);
   return breadcrumbList;
 };
+
+/**
+ * 根据菜单生成权限数组
+ * @param menus
+ * @returns string[]
+ */
+export const menuMapPermission = (menus: MenuType[]) => {
+  const permissionList: string[] = [];
+  function computePermission(menus: MenuType[]) {
+    for (const menu of menus) {
+      const { type, children } = menu;
+      if (type === 1 || type === 2) {
+        computePermission(children ?? []);
+      } else if (type === 3) {
+        permissionList.push((menu as RoleThreeLevelMenu).permission ?? "");
+      }
+    }
+  }
+  computePermission(menus);
+  return permissionList;
+};

@@ -23,7 +23,10 @@
       "@store/*": ["src/store/*"],
       "@views/*": ["src/views/*"],
       "@utils/*": ["src/utils/*"],
-      "@assets/*": ["src/assets/*"]
+      "@assets/*": ["src/assets/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@plugins/*": ["src/plugins/*"],
+      "@directives/*": ["src/directives/*"]
     },
     // 指定在项目中可以使用库的类型
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]

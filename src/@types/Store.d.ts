@@ -9,6 +9,7 @@ declare namespace Store {
     token: string;
     userInfo: unknown;
     userMenus: unknown;
+    permissionList: string[];
   }
 
   type LoginStoreType = {

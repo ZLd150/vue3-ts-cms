@@ -43,6 +43,9 @@ module.exports = {
       .set("@store", "@/store")
       .set("@views", "@/views")
       .set("@utils", "@/utils")
-      .set("@assets", "@/assets");
+      .set("@assets", "@/assets")
+      .set("@hooks", "@/hooks")
+      .set("@plugins", "@/plugins")
+      .set("@directives", "@/directives");
   }
 };

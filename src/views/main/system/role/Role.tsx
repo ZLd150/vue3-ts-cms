@@ -53,10 +53,18 @@ export default defineComponent({
     const getSlot = () => ({
       operation: () => (
         <>
-          <el-button type="primary" icon="Edit">
+          <el-button
+            type="primary"
+            icon="Edit"
+            v-permission={"system:role:update"}
+          >
             编辑
           </el-button>
-          <el-button type="danger" icon="Delete">
+          <el-button
+            type="danger"
+            icon="Delete"
+            v-permission={"system:role:delete"}
+          >
             删除
           </el-button>
         </>
@@ -66,7 +74,13 @@ export default defineComponent({
     const headerSlot = () => (
       <ToolBar
         v-slots={{
-          start: () => <el-button type="primary" innerText="新增角色" />,
+          start: () => (
+            <el-button
+              type="primary"
+              innerText="新增角色"
+              v-permission={"system:role:create"}
+            />
+          ),
           end: () => (
             <el-button icon="Refresh" circle onClick={() => queryRoleList()} />
           )

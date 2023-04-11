@@ -2,7 +2,8 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router/index";
 import store, { setupStore } from "./store";
-import icons from "./plugins/icons";
+import icons from "@plugins/icons";
+import directives from "./directives";
 import ElementPlus from "element-plus";
 import zhCn from "element-plus/dist/locale/zh-cn.mjs";
 
@@ -19,6 +20,8 @@ setupStore();
 app.use(router);
 // 注册全局icons
 app.use(icons);
+// 注册自定义指令
+app.use(directives);
 
 app.mount("#app");
 
