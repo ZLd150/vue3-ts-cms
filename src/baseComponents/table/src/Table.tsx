@@ -102,7 +102,7 @@ export default defineComponent({
 
     watch(
       () => props.loading,
-      (v) => v && setTimeout(() => resetTableScroll(), 270)
+      (v) => v || resetTableScroll()
     );
 
     return () => (

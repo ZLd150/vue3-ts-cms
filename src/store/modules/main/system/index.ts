@@ -10,6 +10,7 @@ import systemApi, {
 type State = Record<string, any>;
 type PageData = UserItem | RoleItem | GoodsItem | MenuItem;
 type payloadType = { pageName: string; queryInfo: QueryInfo };
+type DeletepayloadType = { pageName: string; id: number };
 type PageDataListPayload = { [key: string]: PageData[] };
 type PageDataCountPayload = { [key: string]: number };
 
@@ -50,9 +51,8 @@ const systemModule: Module<Store.SystemState, Store.RootState> = {
     }
   },
   actions: {
-    async getPageListAction({ commit }, payload: payloadType) {
-      const { pageName, queryInfo } = payload;
-      // 请求数据列表
+    // 请求数据列表
+    async getPageListAction({ commit }, { pageName, queryInfo }: payloadType) {
       const {
         data: { list, totalCount }
       } = await systemApi.getPageListData("/" + pageName + "/list", queryInfo);
@@ -60,6 +60,10 @@ const systemModule: Module<Store.SystemState, Store.RootState> = {
       commit("changePageDataCount", {
         [pageName + "Count"]: totalCount ?? list.length
       });
+    },
+    // 删除数据
+    async deletePageItemAction(context, { pageName, id }: DeletepayloadType) {
+      return await systemApi.deletePageItem(`/${pageName}/${id}`);
     }
   }
 };

@@ -79,6 +79,16 @@ class SystemApi {
   > {
     return await request.post({ url, data: queryInfo });
   }
+  /**
+   * 删除页面相关项目
+   * @url 请求地址
+   * @returns
+   */
+  static async deletePageItem(
+    url: string
+  ): Promise<System.ResponseGeneric<{ data: string }>> {
+    return await request.delete({ url });
+  }
 }
 
 export { SystemApi as default };

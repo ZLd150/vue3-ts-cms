@@ -13,10 +13,15 @@ const deleteNode = (el: HTMLElement, val: string) => {
   permissionMap.set(val, { el, temp });
 };
 
+// 还原节点
+const resetNode = (btn: { el: HTMLElement; temp: Comment }) => {
+  const { temp, el } = btn;
+  temp.replaceWith(el);
+};
+
 // 导出一个匿名函数用作自定义指令的第二个参数
 export default (): Directive => {
   const { hasPermission } = usePermission();
-
   return {
     mounted(el: HTMLElement, bindng: any) {
       const { value } = bindng;
@@ -32,8 +37,7 @@ export default (): Directive => {
       if (oldPermission === newPermission) return;
       if (newPermission && (btn = permissionMap.get(oldValue))) {
         // 存在权限,还原
-        const { temp, el } = btn;
-        temp.replaceWith(el);
+        resetNode(btn);
       } else if (oldPermission && !newPermission) {
         // 有权限变更为无权限
         deleteNode(el, value);

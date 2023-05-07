@@ -4,7 +4,11 @@ import { userFormConfig, columns } from "./config/field";
 import Table from "@baseComponents/table";
 import ToolBar from "@baseComponents/toolbar";
 import BaseForm from "@baseComponents/form";
+import Dialog from "@baseComponents/dialog";
 import $style from "./App.module.less";
+
+import useToast from "@hooks/useToast";
+import useConfirm from "@hooks/useConfirm";
 
 import type { UserItem } from "@/api/main/system";
 
@@ -22,6 +26,8 @@ export default defineComponent({
   emits: [],
   setup(props, { slots, expose, attrs, emit }) {
     const store = useStore();
+    const toast = useToast();
+    const confirm = useConfirm();
     const loading = ref(false);
     const searchValues = ref(defaultValues());
     const userList = computed<UserItem[]>(() =>
@@ -63,12 +69,16 @@ export default defineComponent({
           innerText={val ? "启用" : "禁用"}
         ></el-button>
       ),
-      operation: () => (
+      operation: (val: unknown, { id, name }: UserItem) => (
         <>
           <el-button type="primary" icon="Edit">
             编辑
           </el-button>
-          <el-button type="danger" icon="Delete">
+          <el-button
+            type="danger"
+            icon="Delete"
+            onClick={() => deleteUser(id, name)}
+          >
             删除
           </el-button>
         </>
@@ -78,7 +88,13 @@ export default defineComponent({
     const headerSlot = () => (
       <ToolBar
         v-slots={{
-          start: () => <el-button type="primary" innerText="新增用户" />,
+          start: () => (
+            <el-button
+              type="primary"
+              innerText="新增用户"
+              onClick={() => addUser()}
+            />
+          ),
           end: () => (
             <el-button icon="Refresh" circle onClick={() => queryUserList()} />
           )
@@ -121,6 +137,32 @@ export default defineComponent({
         queryUserList();
       }
     };
+    // delete user
+    const deleteUser = (id: number, name: string) => {
+      confirm.require("提示", `确认删除 ${name} 用户？`, () => {
+        loading.value = true;
+        // 确认回调
+        store
+          .dispatch("system/deletePageItemAction", { pageName: "users", id })
+          .then(({ code, data }) => {
+            if (code === 0) {
+              toast.successToast(data ?? "删除成功！");
+              queryUserList();
+            } else confirm.hint(data ?? "删除失败！");
+          })
+          .finally(() => (loading.value = false));
+      });
+    };
+    // 弹窗相关
+    const win = ref();
+    const title = ref("新增用户");
+
+    // 新增用户
+    const addUser = () => {
+      win.value?.show();
+    };
+
+    const defaultSlot = () => <div>哈哈哈威风威风</div>;
 
     // 请求数据
     queryUserList();
@@ -149,6 +191,13 @@ export default defineComponent({
             {...childEmits}
           />
         </div>
+        {/* 弹窗 */}
+        <Dialog
+          ref={win}
+          title={title.value}
+          width={600}
+          v-slots={{ default: () => defaultSlot() }}
+        />
       </div>
     );
   }

@@ -1,17 +1,26 @@
 {
-  "src/hooks/usePageValues.ts": {
-    "description": "页面默认表单值"
-  },
-  "src/hooks/usePermission.ts": {
-    "description": "用户权限"
-  },
-  "src/directives": {
-    "description": "自定义指令"
-  },
-  "src/directives/permission.ts": {
-    "description": "权限校验"
-  },
-  "src/hooks/useSystem.ts": {
-    "description": "公共数据"
-  }
+    "src/hooks/usePageValues.ts": {
+        "description": "页面默认表单值"
+    },
+    "src/hooks/usePermission.ts": {
+        "description": "用户权限"
+    },
+    "src/directives": {
+        "description": "自定义指令"
+    },
+    "src/directives/permission.ts": {
+        "description": "权限校验"
+    },
+    "src/hooks/useSystem.ts": {
+        "description": "公共数据"
+    },
+    "src/hooks": {
+        "description": "hooks"
+    },
+    "src/hooks/useToast.ts": {
+        "description": "消息提示"
+    },
+    "src/hooks/useConfirm.ts": {
+        "description": "强制提示"
+    }
 }
