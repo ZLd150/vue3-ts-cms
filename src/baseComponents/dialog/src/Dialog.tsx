@@ -2,7 +2,7 @@ import { ref, defineComponent } from "vue";
 import $style from "./App.module.less";
 
 export default defineComponent({
-  emits: ["open", "opened", "close", "closed"],
+  emits: ["open", "opened", "close", "closed", "cancel", "confirm"],
   props: {
     title: { type: String, default: "" },
     width: { type: [String, Number], default: 500 },
@@ -26,10 +26,37 @@ export default defineComponent({
       destroy.value = true;
       visible.value = false;
     };
+    // 事件监听
+    const onListeners = ref<Record<string, (...args: any[]) => void>>({});
+    const firingEvent = ref<Record<string, boolean>>({});
+    // 获取所有事件
+    const getAllListenners = () => onListeners.value;
+    // 添加监听事件
+    const on = (name: string, fn: (...args: any[]) => void) => {
+      onListeners.value[name] = fn;
+    };
+    // 触发事件
+    const fireEvent = (name: string, ...args: any[]) => {
+      const onListener = onListeners.value[name];
+      // 节流阀,防止短时间内同一事件执行多次
+      if (firingEvent.value[name] === true) return;
+      firingEvent.value[name] = true;
+      if (typeof onListener === "function") {
+        onListener(args);
+      }
+      setTimeout(() => {
+        firingEvent.value[name] = false;
+      });
+    };
+    // 触发onLiseners事件和组件v-on事件
+    const emitHandler = (name: any, ...args: any[]) => {
+      emit(name, ...args);
+      fireEvent(name, ...args);
+    };
     // 导出的方法
-    const exposeAPI = { show, hidden, close };
+    const exposeAPI = { show, hidden, close, on, fireEvent, getAllListenners };
     expose(exposeAPI);
-
+    // 默认头部
     const header = () => (
       <>
         {/* 标题 */}
@@ -46,21 +73,31 @@ export default defineComponent({
         />
       </>
     );
+    // 默认底部
     const footer = () => (
       <>
-        <el-button type="warning" onClick={() => close()}>
+        <el-button
+          type="warning"
+          onClick={() => (emitHandler("cancel"), close())}
+        >
           取消
         </el-button>
-        <el-button type="primary">确认</el-button>
+        <el-button
+          type="primary"
+          onClick={() => (emitHandler("confirm"), close())}
+        >
+          确认
+        </el-button>
       </>
     );
     // 事件
     const emitAttr = {
-      onOpen: () => emit("open"),
-      onOpened: () => emit("opened"),
-      onClose: () => emit("close"),
-      onClosed: () => emit("closed")
+      onOpen: () => emitHandler("open"),
+      onOpened: () => emitHandler("opened"),
+      onClose: () => emitHandler("close"),
+      onClosed: () => emitHandler("closed")
     };
+
     return () => (
       <el-dialog
         class={$style.dialog}

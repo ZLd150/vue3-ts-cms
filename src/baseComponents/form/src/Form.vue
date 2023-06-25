@@ -5,11 +5,26 @@
       <slot name="header"></slot>
     </div>
     <!-- 表单 -->
-    <el-form :label-width="labelWidth + 'px'">
+    <el-form v-bind="$attrs" :label-width="labelWidth + 'px'">
       <el-row>
-        <template v-for="{ label, rules = [], ...args } in items" :key="label">
-          <el-col v-bind="colLayout">
-            <el-form-item v-bind="{ label, rules, style: itemStyle }">
+        <template
+          v-for="{
+            label,
+            rules = [],
+            colLayout = {},
+            visible,
+            ...args
+          } in items"
+          :key="label"
+        >
+          <el-col v-bind="colLayout" v-if="visible !== false">
+            <el-form-item
+              v-bind="{
+                label,
+                rules,
+                style: { ...itemStyle, marginBottom: '15px !important' }
+              }"
+            >
               <component
                 v-bind="args.props"
                 :is="components[args.controlType]"
@@ -24,11 +39,21 @@
       </el-row>
     </el-form>
     <!-- 尾 -->
-    <div :class="cssModule['base-form-footer']">
+    <div
+      :class="cssModule['base-form-footer']"
+      :style="{ 'padding-bottom': $slots.footer ? '10px' : '' }"
+    >
       <slot name="footer"></slot>
     </div>
   </div>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+export default defineComponent({
+  inheritAttrs: false
+});
+</script>
 
 <script setup lang="ts">
 import { useCssModule, reactive, PropType, defineAsyncComponent } from "vue";
@@ -41,12 +66,8 @@ const props = defineProps({
     default: () => []
   },
   form: { type: Object as PropType<Record<string, any>>, default: () => ({}) },
-  labelWidth: { type: Number, default: 100 },
-  itemStyle: { type: Object, default: () => ({ padding: "10px 40px" }) },
-  colLayout: {
-    type: Object,
-    default: () => ({ xl: 6, lg: 8, md: 12, sm: 24, xs: 24 })
-  }
+  labelWidth: { type: Number, default: 80 },
+  itemStyle: { type: Object, default: () => ({}) }
 });
 const emits = defineEmits(["update:form"]);
 
@@ -56,7 +77,8 @@ const components: Record<string, ReturnType<typeof defineAsyncComponent>> = {
   select: defineAsyncComponent(() => import("../components/Select.vue")),
   datepicker: defineAsyncComponent(
     () => import("element-plus/es/components/date-picker")
-  )
+  ),
+  dataTree: defineAsyncComponent(() => import("../components/DataTree"))
 };
 
 const values = reactive({ ...props.form });

@@ -10,6 +10,8 @@ declare namespace Store {
     userInfo: unknown;
     userMenus: unknown;
     permissionList: string[];
+    entireDepartment: any[];
+    entireRole: any[];
   }
 
   type LoginStoreType = {

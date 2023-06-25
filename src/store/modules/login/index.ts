@@ -2,6 +2,7 @@ import router from "@/router";
 import { Module } from "vuex";
 import cache from "@/utils/cache";
 import loginApi, { UserInfoType, RoleMenuType } from "@/api/login";
+import systemApi, { Department, RoleItem } from "@/api/main/system";
 import { newMapMenus, menuMapPermission } from "@utils/mapRouter";
 
 type State = Record<string, any>;
@@ -13,7 +14,9 @@ const loginModule: Module<Store.LoginState, Store.RootState> = {
       token: "",
       userInfo: {},
       userMenus: [],
-      permissionList: []
+      permissionList: [],
+      entireDepartment: [],
+      entireRole: []
     };
   },
   getters: {
@@ -38,6 +41,14 @@ const loginModule: Module<Store.LoginState, Store.RootState> = {
       routes.forEach((t) => router.addRoute("main", t));
       // 根据菜单生成权限数组
       state.permissionList = menuMapPermission(userMenus);
+    },
+    changeRoleList(state, roleList: RoleItem[]) {
+      state.entireRole = roleList;
+      cache.setCache("roleList", roleList);
+    },
+    changeDepartmentList(state, departmentList: Department[]) {
+      state.entireDepartment = departmentList;
+      cache.setCache("departmentList", departmentList);
     }
   },
   actions: {
@@ -55,8 +66,24 @@ const loginModule: Module<Store.LoginState, Store.RootState> = {
       const { data: menuList = [] } = await loginApi.queryUserMenus(
         data.role.id
       );
-      !menuList.length || commit("changeUserMenus", menuList);
-      // 4.跳转到首页
+      commit("changeUserMenus", menuList || []);
+      // 4.请求部门列表
+      const {
+        data: { list: departmentList }
+      } = await systemApi.getPageListData("/department/list", {
+        offset: 0,
+        size: 999
+      });
+      commit("changeDepartmentList", departmentList || []);
+      // 5.请求角色列表
+      const {
+        data: { list: RoleList }
+      } = await systemApi.getPageListData("/role/list", {
+        offset: 0,
+        size: 999
+      });
+      commit("changeRoleList", RoleList || []);
+      // 6.跳转到首页
       router.push("/main");
     },
     // 解决刷新页面时vuex数据丢失的问题
@@ -66,7 +93,11 @@ const loginModule: Module<Store.LoginState, Store.RootState> = {
       const userInfo = cache.getCache("userInfo");
       !userInfo || commit("changeUserInfo", userInfo);
       const userMenus = cache.getCache("userMenus");
-      !userMenus.length || commit("changeUserMenus", userMenus);
+      commit("changeUserMenus", userMenus);
+      const roleList = cache.getCache("roleList");
+      commit("changeRoleList", roleList);
+      const departmentList = cache.getCache("departmentList");
+      commit("changeDepartmentList", departmentList);
     },
     // 重置动态路由
     resetRoutes({ commit }, payload: RoleMenuType[]) {

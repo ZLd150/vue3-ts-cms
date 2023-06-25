@@ -22,5 +22,17 @@
     },
     "src/hooks/useConfirm.ts": {
         "description": "强制提示"
+    },
+    "src/utils/utils.ts": {
+        "description": "工具函数"
+    },
+    "src/utils/renderUtils.ts": {
+        "description": "值渲染函数"
+    },
+    "src/utils/mapRouter.ts": {
+        "description": "路由映射"
+    },
+    "src/utils/cache.ts": {
+        "description": "本次存储"
     }
 }

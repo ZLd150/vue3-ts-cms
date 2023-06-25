@@ -3,7 +3,7 @@ const formItems: System.Form.FormItem[] = [
     controlType: "input",
     name: "name",
     label: "商品名称",
-    xs: 8,
+    colLayout: { xs: 24, sm: 24, md: 12, lg: 8, xl: 6 },
     props: {
       placeholder: "请输入商品名称！"
     }
@@ -12,7 +12,7 @@ const formItems: System.Form.FormItem[] = [
     controlType: "input",
     name: "newPrice",
     label: "价格",
-    xs: 8,
+    colLayout: { xs: 24, sm: 24, md: 12, lg: 8, xl: 6 },
     props: {
       placeholder: "请输入价格！"
     }
@@ -21,7 +21,7 @@ const formItems: System.Form.FormItem[] = [
     controlType: "input",
     name: "address",
     label: "地址",
-    xs: 8,
+    colLayout: { xs: 24, sm: 24, md: 12, lg: 8, xl: 6 },
     props: {
       placeholder: "请输入货源地址！"
     }
@@ -30,7 +30,7 @@ const formItems: System.Form.FormItem[] = [
     controlType: "datepicker",
     name: "createAt",
     label: "创建时间",
-    xs: 8,
+    colLayout: { xs: 24, sm: 24, md: 12, lg: 8, xl: 6 },
     props: {
       type: "daterange",
       unlinkPanels: true,

@@ -18,6 +18,7 @@ module.exports = {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "@typescript-eslint/no-var-requires": "off", // 关闭eslint关于requires引入的警告
+    "@typescript-eslint/ban-ts-comment": "off", // 关闭不允许使用ignore的警告
     "no-undef": "off" // 关闭找不到警告
   }
 };

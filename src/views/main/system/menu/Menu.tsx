@@ -1,10 +1,13 @@
 import { ref, defineComponent, computed, resolveComponent, h } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useStore } from "@/store";
 import { columns } from "./config/field";
 import Table from "@baseComponents/table";
 import ToolBar from "@baseComponents/toolbar";
 import $style from "./App.module.less";
+
+import useToast from "@hooks/useToast";
+import useConfirm from "@hooks/useConfirm";
 
 import type { MenuItem } from "@/api/main/system";
 
@@ -12,7 +15,10 @@ export default defineComponent({
   emits: [],
   setup(props, { slots, expose, attrs, emit }) {
     const router = useRouter();
+    const route = useRoute();
     const store = useStore();
+    const toast = useToast();
+    const confirm = useConfirm();
     const loading = ref(false);
     const menuList = computed<MenuItem[]>(() =>
       store.getters["system/pageListData"]("menu")
@@ -50,7 +56,7 @@ export default defineComponent({
     const getSlot = () => ({
       // 路由地址
       url: (val: string, data: MenuItem) => {
-        const isDisable = data.type === 1;
+        const isDisable = data.type === 1 || val === route.path;
         return (
           <el-link
             type={isDisable ? "info" : "primary"}
@@ -75,7 +81,7 @@ export default defineComponent({
           <span></span>
         );
       },
-      operation: () => (
+      operation: (val: unknown, row: MenuItem) => (
         <>
           <el-button
             type="primary"
@@ -90,6 +96,7 @@ export default defineComponent({
             icon="Delete"
             size="small"
             v-permission={"system:menu:delete"}
+            onClick={() => deleteMenu(row.id, row.name)}
           >
             删除
           </el-button>
@@ -117,6 +124,23 @@ export default defineComponent({
     const tableAttrs = {
       "row-key": "id",
       "tree-props": { children: "children" }
+    };
+
+    // delete menu
+    const deleteMenu = (id: number, name: string) => {
+      confirm.require("提示", `确认删除 ${name} 菜单？`, () => {
+        loading.value = true;
+        // 确认回调
+        store
+          .dispatch("system/deletePageItemAction", { pageName: "menu", id })
+          .then(({ code, data }) => {
+            if (code === 0) {
+              toast.successToast(data ?? "删除成功！");
+              queryMenuList();
+            } else confirm.hint(data ?? "删除失败！");
+          })
+          .finally(() => (loading.value = false));
+      });
     };
 
     queryMenuList();

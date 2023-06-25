@@ -1,12 +1,16 @@
 import { ref, defineComponent, computed } from "vue";
 import { useStore } from "@/store";
-import { roleFormConfig, columns } from "./config/field";
+import { roleFormConfig, columns, addRoleFormConfig } from "./config/field";
 import Table from "@baseComponents/table";
 import ToolBar from "@baseComponents/toolbar";
 import BaseForm from "@baseComponents/form";
+import Dialog from "@baseComponents/dialog";
 import $style from "./App.module.less";
 
-import type { RoleItem } from "@/api/main/system";
+import useToast from "@hooks/useToast";
+import useConfirm from "@hooks/useConfirm";
+
+import SystemApi, { RoleItem } from "@/api/main/system";
 
 // 默认值
 const defaultValues = () => ({
@@ -15,10 +19,20 @@ const defaultValues = () => ({
   createAt: ""
 });
 
+// 新增角色默认值
+const addRoleInfo = {
+  name: "",
+  intro: "",
+  menuList: []
+};
+
 export default defineComponent({
   emits: [],
   setup(props, { slots, expose, attrs, emit }) {
     const store = useStore();
+    const toast = useToast();
+    const confirm = useConfirm();
+
     const loading = ref(false);
     const searchValues = ref(defaultValues());
     const roleList = computed<RoleItem[]>(() =>
@@ -51,12 +65,13 @@ export default defineComponent({
 
     // column slot
     const getSlot = () => ({
-      operation: () => (
+      operation: (val: unknown, row: RoleItem) => (
         <>
           <el-button
             type="primary"
             icon="Edit"
             v-permission={"system:role:update"}
+            onClick={() => editRole(row)}
           >
             编辑
           </el-button>
@@ -64,6 +79,7 @@ export default defineComponent({
             type="danger"
             icon="Delete"
             v-permission={"system:role:delete"}
+            onClick={() => deleteRole(row.id, row.name)}
           >
             删除
           </el-button>
@@ -79,6 +95,7 @@ export default defineComponent({
               type="primary"
               innerText="新增角色"
               v-permission={"system:role:create"}
+              onClick={() => addRole()}
             />
           ),
           end: () => (
@@ -125,6 +142,74 @@ export default defineComponent({
         queryRoleList();
       }
     };
+    // 弹窗相关
+    const win = ref();
+    const title = ref("");
+    const addRoleValues = ref({});
+    const formConfig = ref({ ...addRoleFormConfig });
+
+    const dialogSlots = () => ({
+      default: () => (
+        <BaseForm
+          v-model={[addRoleValues.value, "form"]}
+          {...formConfig.value}
+        />
+      )
+    });
+
+    // delete role
+    const deleteRole = (id: number, name: string) => {
+      confirm.require("提示", `确认删除 ${name} 角色？`, () => {
+        loading.value = true;
+        // 确认回调
+        store
+          .dispatch("system/deletePageItemAction", { pageName: "role", id })
+          .then(({ code, data }) => {
+            if (code === 0) {
+              toast.successToast(data ?? "删除成功！");
+              queryRoleList();
+            } else confirm.hint(data ?? "删除失败！");
+          })
+          .finally(() => (loading.value = false));
+      });
+    };
+
+    // add role
+    const addRole = () => {
+      title.value = "新增角色";
+      Object.assign(addRoleValues.value, { ...addRoleInfo });
+      win.value?.on("confirm", () => {
+        loading.value = true;
+        SystemApi.createInfo("/role", { ...addRoleValues.value })
+          .then(({ code, data }) => {
+            if (code === 0) {
+              toast.successToast(data ?? "创建成功！");
+              queryRoleList();
+            } else confirm.hint(data ?? "创建失败！");
+          })
+          .finally(() => (loading.value = false));
+      });
+      win.value?.show();
+    };
+
+    // edit role info
+    const editRole = (row: RoleItem) => {
+      title.value = "编辑角色";
+      const { name, intro, id, menuList } = row;
+      Object.assign(addRoleValues.value, { name, intro, menuList });
+      win.value?.on("confirm", () => {
+        loading.value = true;
+        SystemApi.editInfo("/role/" + id, { ...addRoleValues.value })
+          .then(({ code, data }) => {
+            if (code === 0) {
+              toast.successToast(data ?? "修改成功！");
+              queryRoleList();
+            } else confirm.hint(data ?? "修改失败！");
+          })
+          .finally(() => (loading.value = false));
+      });
+      win.value?.show();
+    };
 
     queryRoleList();
     return () => (
@@ -152,6 +237,8 @@ export default defineComponent({
             {...childEmits}
           />
         </div>
+        {/* 弹窗 */}
+        <Dialog ref={win} title={title.value} v-slots={{ ...dialogSlots() }} />
       </div>
     );
   }

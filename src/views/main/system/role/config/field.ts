@@ -1,9 +1,15 @@
+type CommonFormType = {
+  items: System.Form.FormItem[];
+  labelWidth?: number;
+  itemStyle?: Record<string, string>;
+};
+
 const formItems: System.Form.FormItem[] = [
   {
     controlType: "input",
     name: "name",
     label: "角色名称",
-    xs: 8,
+    colLayout: { xs: 24, sm: 24, md: 12, lg: 8, xl: 8 },
     props: {
       placeholder: "请输入角色名称！"
     }
@@ -12,7 +18,7 @@ const formItems: System.Form.FormItem[] = [
     controlType: "input",
     name: "intro",
     label: "权限介绍",
-    xs: 8,
+    colLayout: { xs: 24, sm: 24, md: 12, lg: 8, xl: 8 },
     props: {
       placeholder: "请输入权限介绍！"
     }
@@ -21,7 +27,7 @@ const formItems: System.Form.FormItem[] = [
     controlType: "datepicker",
     name: "createAt",
     label: "创建时间",
-    xs: 8,
+    colLayout: { xs: 24, sm: 24, md: 12, lg: 8, xl: 8 },
     props: {
       type: "daterange",
       unlinkPanels: true,
@@ -36,6 +42,47 @@ export const roleFormConfig = {
   itemStyle: { padding: "10px 40px" },
   colLayout: { span: 8 },
   items: formItems
+};
+
+const addRoleFormItems: System.Form.FormItem[] = [
+  {
+    controlType: "input",
+    name: "name",
+    label: "角色名：",
+    colLayout: { span: 24 },
+    props: {
+      placeholder: "请输入角色名称"
+    }
+  },
+  {
+    controlType: "input",
+    name: "intro",
+    label: "权限介绍：",
+    colLayout: { span: 24 },
+    props: {
+      placeholder: "请输入角色权限介绍"
+    }
+  },
+  {
+    controlType: "dataTree",
+    name: "menuList",
+    label: "角色权限：",
+    colLayout: { span: 24 },
+    props: {
+      items: "menuList",
+      nodeKey: "id",
+      childProps: {
+        children: "children",
+        label: "name"
+      },
+      style: { height: "150px", overflow: "auto" }
+    }
+  }
+];
+
+export const addRoleFormConfig: CommonFormType = {
+  labelWidth: 100,
+  items: addRoleFormItems
 };
 
 export const columns: System.Tabel.TabelItem[] = [

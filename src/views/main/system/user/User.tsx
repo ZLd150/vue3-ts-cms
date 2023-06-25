@@ -1,6 +1,6 @@
 import { ref, computed, defineComponent } from "vue";
 import { useStore } from "@/store";
-import { userFormConfig, columns } from "./config/field";
+import { userFormConfig, addUserFormConfig, columns } from "./config/field";
 import Table from "@baseComponents/table";
 import ToolBar from "@baseComponents/toolbar";
 import BaseForm from "@baseComponents/form";
@@ -10,26 +10,36 @@ import $style from "./App.module.less";
 import useToast from "@hooks/useToast";
 import useConfirm from "@hooks/useConfirm";
 
-import type { UserItem } from "@/api/main/system";
+import SystemApi, { UserItem } from "@/api/main/system";
 
-// 默认值
-const defaultValues = () => ({
+// 顶部搜索默认值
+const defaultValues = {
   name: "",
   realName: "",
   cellPhone: "",
   enable: "",
   createAt: ""
-});
+};
+// 新增用户默认值
+const addUserInfo = {
+  name: "",
+  realname: "",
+  password: "",
+  cellphone: "",
+  roleId: "",
+  departmentId: ""
+};
 
 export default defineComponent({
   props: {},
   emits: [],
-  setup(props, { slots, expose, attrs, emit }) {
+  setup(props) {
     const store = useStore();
     const toast = useToast();
     const confirm = useConfirm();
+
     const loading = ref(false);
-    const searchValues = ref(defaultValues());
+    const searchValues = ref({ ...defaultValues });
     const userList = computed<UserItem[]>(() =>
       store.getters["system/pageListData"]("users")
     );
@@ -69,15 +79,21 @@ export default defineComponent({
           innerText={val ? "启用" : "禁用"}
         ></el-button>
       ),
-      operation: (val: unknown, { id, name }: UserItem) => (
+      operation: (val: unknown, row: UserItem) => (
         <>
-          <el-button type="primary" icon="Edit">
+          <el-button
+            type="primary"
+            icon="Edit"
+            v-permission={"system:users:update"}
+            onClick={() => editUserInfo(row)}
+          >
             编辑
           </el-button>
           <el-button
             type="danger"
             icon="Delete"
-            onClick={() => deleteUser(id, name)}
+            v-permission={"system:users:delete"}
+            onClick={() => deleteUser(row.id, row.name)}
           >
             删除
           </el-button>
@@ -92,6 +108,7 @@ export default defineComponent({
             <el-button
               type="primary"
               innerText="新增用户"
+              v-permission={"system:users:create"}
               onClick={() => addUser()}
             />
           ),
@@ -126,7 +143,7 @@ export default defineComponent({
     });
     // reset form
     const reset = () => {
-      Object.assign(searchValues.value, defaultValues());
+      Object.assign(searchValues.value, { ...defaultValues });
       queryUserList();
     };
     // child component emit event
@@ -155,14 +172,61 @@ export default defineComponent({
     };
     // 弹窗相关
     const win = ref();
-    const title = ref("新增用户");
+    const title = ref("");
+    const addUserValues = ref({});
+    const formConfig = ref({ ...addUserFormConfig });
+    const passWordItem = computed(() =>
+      addUserFormConfig["items"].find(({ name }) => name === "password")
+    );
 
-    // 新增用户
+    // add user
     const addUser = () => {
+      title.value = "新增用户";
+      Object.assign(addUserValues.value, { ...addUserInfo });
+      Object.assign(passWordItem.value!, { visible: true });
+      win.value?.on("confirm", () => {
+        loading.value = true;
+        SystemApi.createInfo("/users", { ...addUserValues.value })
+          .then(({ code, data }) => {
+            if (code === 0) {
+              toast.successToast(data ?? "创建成功！");
+              queryUserList();
+            } else confirm.hint(data ?? "创建失败！");
+          })
+          .finally(() => (loading.value = false));
+      });
       win.value?.show();
     };
 
-    const defaultSlot = () => <div>哈哈哈威风威风</div>;
+    // edit user info
+    const editUserInfo = (row: UserItem) => {
+      title.value = "编辑用户";
+      const { name, realname, cellphone, departmentId, roleId, id } = row;
+      const editUserInfo = { name, realname, cellphone, departmentId, roleId };
+      Object.assign(passWordItem.value!, { visible: false });
+      Object.assign(addUserValues.value, { ...editUserInfo });
+      win.value?.on("confirm", () => {
+        loading.value = true;
+        SystemApi.editInfo("/users/" + id, { ...addUserValues.value })
+          .then(({ code, data }) => {
+            if (code === 0) {
+              toast.successToast(data ?? "修改成功！");
+              queryUserList();
+            } else confirm.hint(data ?? "修改失败！");
+          })
+          .finally(() => (loading.value = false));
+      });
+      win.value?.show();
+    };
+
+    const dialogSlots = () => ({
+      default: () => (
+        <BaseForm
+          v-model={[addUserValues.value, "form"]}
+          {...formConfig.value}
+        />
+      )
+    });
 
     // 请求数据
     queryUserList();
@@ -174,6 +238,7 @@ export default defineComponent({
             {...userFormConfig}
             v-model={[searchValues.value, "form"]}
             v-slots={{ ...formSlots() }}
+            class={$style["form-padding"]}
           />
         </div>
         {/* 隔离盒子 */}
@@ -192,12 +257,7 @@ export default defineComponent({
           />
         </div>
         {/* 弹窗 */}
-        <Dialog
-          ref={win}
-          title={title.value}
-          width={600}
-          v-slots={{ default: () => defaultSlot() }}
-        />
+        <Dialog ref={win} title={title.value} v-slots={{ ...dialogSlots() }} />
       </div>
     );
   }

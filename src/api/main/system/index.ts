@@ -61,6 +61,32 @@ interface Child {
   parentId: number;
 }
 
+export type CreateUser = {
+  name: string;
+  realname: string;
+  password: string;
+  cellphone: string;
+  departmentId: string;
+  roleId: string;
+};
+
+export type EditUser = {
+  name?: string;
+  realname?: string;
+  cellphone?: string;
+  departmentId?: string;
+  roleId?: string;
+};
+
+export interface Department {
+  id: number;
+  name: string;
+  parentId: number;
+  createAt: string;
+  updateAt: string;
+  leader: string;
+}
+
 class SystemApi {
   /**
    * 请求用户列表
@@ -73,7 +99,7 @@ class SystemApi {
     queryInfo: QueryInfo
   ): Promise<
     System.ResponseGeneric<{
-      list: (UserItem | RoleItem | GoodsItem)[];
+      list: (UserItem | RoleItem | GoodsItem | Department)[];
       totalCount: number;
     }>
   > {
@@ -88,6 +114,32 @@ class SystemApi {
     url: string
   ): Promise<System.ResponseGeneric<{ data: string }>> {
     return await request.delete({ url });
+  }
+
+  /**
+   * 模块创建API
+   * @param {string} url 请求地址
+   * @params 参数对象
+   * @returns
+   */
+  static async createInfo(
+    url: string,
+    params: Record<string, any>
+  ): Promise<System.ResponseGeneric<string>> {
+    return await request.post({ url, data: params });
+  }
+
+  /**
+   * 模块修改API
+   * @param {string} url 请求地址
+   * @params 参数对象
+   * @returns
+   */
+  static async editInfo(
+    url: string,
+    params: Record<string, any>
+  ): Promise<System.ResponseGeneric<string>> {
+    return await request.patch({ url, data: params });
   }
 }
 

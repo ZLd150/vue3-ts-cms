@@ -1,47 +1,46 @@
 import { dayjs } from "element-plus";
 
-type userFormConfigType = {
+type CommonFormType = {
   items: System.Form.FormItem[];
   labelWidth?: number;
   itemStyle?: Record<string, string>;
-  colLayout?: Record<string, number>;
 };
 
 const formItems: System.Form.FormItem[] = [
   {
     controlType: "input",
     name: "name",
-    label: "用户名",
-    xs: 8,
+    label: "用户名：",
+    colLayout: { xs: 24, sm: 24, md: 12, lg: 8, xl: 6 },
     props: {
-      placeholder: "请输入用户名！"
+      placeholder: "请输入用户名"
     }
   },
   {
     controlType: "input",
     name: "realName",
-    label: "真实姓名",
-    xs: 8,
+    label: "真实姓名：",
+    colLayout: { xs: 24, sm: 24, md: 12, lg: 8, xl: 6 },
     props: {
-      placeholder: "请输入真实姓名！"
+      placeholder: "请输入真实姓名"
     }
   },
   {
     controlType: "input",
     name: "cellPhone",
-    label: "电话号码",
-    xs: 8,
+    label: "电话号码：",
+    colLayout: { xs: 24, sm: 24, md: 12, lg: 8, xl: 6 },
     props: {
-      placeholder: "请输入手机号！"
+      placeholder: "请输入手机号"
     }
   },
   {
     controlType: "select",
     name: "enable",
-    label: "状态",
-    xs: 8,
+    label: "状态：",
+    colLayout: { xs: 24, sm: 24, md: 12, lg: 8, xl: 6 },
     props: {
-      placeholder: "请选择状态！",
+      placeholder: "请选择状态",
       options: [
         {
           label: "启用",
@@ -57,23 +56,90 @@ const formItems: System.Form.FormItem[] = [
   {
     controlType: "datepicker",
     name: "createAt",
-    label: "创建时间",
-    xs: 8,
+    label: "创建时间：",
+    colLayout: { xs: 24, sm: 24, md: 12, lg: 8, xl: 6 },
     props: {
-      placeholder: "请选择创建时间范围！",
+      placeholder: "请选择创建时间范围",
       type: "daterange",
       unlinkPanels: true,
+      valueFormat: "YYYY-MM-DD",
       startPlaceholder: "开始时间",
       endPlaceholder: "结束时间"
     }
   }
 ];
 
-export const userFormConfig: userFormConfigType = {
+const addUserFormItems: System.Form.FormItem[] = [
+  {
+    controlType: "input",
+    name: "name",
+    label: "用户名称：",
+    colLayout: { span: 24 },
+    props: {
+      placeholder: "请输入账户名称"
+    }
+  },
+  {
+    controlType: "input",
+    name: "realname",
+    label: "真实姓名：",
+    colLayout: { span: 24 },
+    props: {
+      placeholder: "请输入真实姓名"
+    }
+  },
+  {
+    controlType: "input",
+    name: "password",
+    label: "用户密码：",
+    colLayout: { span: 24 },
+    props: {
+      type: "password",
+      showPassword: true,
+      clearable: true,
+      placeholder: "请输入账户密码"
+    }
+  },
+  {
+    controlType: "input",
+    name: "cellphone",
+    label: "电话号码：",
+    colLayout: { span: 24 },
+    props: {
+      placeholder: "请输入电话号码"
+    }
+  },
+  {
+    controlType: "select",
+    name: "roleId",
+    label: "选择角色：",
+    colLayout: { span: 24 },
+    props: {
+      placeholder: "请选择角色",
+      query: "roleList"
+    }
+  },
+  {
+    controlType: "select",
+    name: "departmentId",
+    label: "选择部门：",
+    colLayout: { span: 24 },
+    props: {
+      placeholder: "请选择部门",
+      query: "departmentList"
+    }
+  }
+];
+
+export const userFormConfig: CommonFormType = {
   labelWidth: 120,
   itemStyle: { padding: "10px 40px" },
-  colLayout: { span: 8 },
   items: formItems
+};
+
+export const addUserFormConfig: CommonFormType = {
+  labelWidth: 100,
+  items: addUserFormItems
 };
 
 export const columns: System.Tabel.TabelItem[] = [
