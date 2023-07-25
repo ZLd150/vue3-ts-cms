@@ -7,7 +7,7 @@ import type { RouteRecordRaw } from "vue-router";
 export type MenuType = RoleMenuType | RoleSecondLevelMenu | RoleThreeLevelMenu;
 export type BreadcrumbItem = System.Breadcrumb.ListItem;
 // 二级菜单组件
-const dashboard = () => import("@views/main/analysis/dashboard/Dashboard.vue");
+const dashboard = () => import("@views/main/analysis/dashboard/Dashboard");
 const overview = () => import("@views/main/analysis/overview/Overview.vue");
 const category = () => import("@views/main/product/category/Category.vue");
 const goods = () => import("@/views/main/product/goods/Goods");

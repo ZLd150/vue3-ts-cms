@@ -14,3 +14,5 @@ declare module "element-plus/dist/locale/zh-cn.mjs" {
   const zhCn: Record<readonly [key: string], any>;
   export default zhCn;
 }
+
+declare module "*.json";

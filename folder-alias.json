@@ -34,5 +34,23 @@
     },
     "src/utils/cache.ts": {
         "description": "本次存储"
+    },
+    "src/hooks/useEcharts.ts": {
+        "description": "图表展示"
+    },
+    "src/baseComponents/chart/components/Bar": {
+        "description": "柱图"
+    },
+    "src/baseComponents/chart/components/Line": {
+        "description": "线图"
+    },
+    "src/baseComponents/chart/components/Pie": {
+        "description": "饼图"
+    },
+    "src/baseComponents/chart/components/Rose": {
+        "description": "玫瑰图"
+    },
+    "src/baseComponents/chart/components/Map": {
+        "description": "地图"
     }
 }

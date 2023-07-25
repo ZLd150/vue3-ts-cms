@@ -1,4 +1,4 @@
-const dashboard = () => import("@/views/main/analysis/dashboard/Dashboard.vue");
+const dashboard = () => import("@/views/main/analysis/dashboard/Dashboard");
 export default {
   path: "/main/analysis/dashboard",
   name: "dashboard",
